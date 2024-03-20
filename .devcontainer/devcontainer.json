@@ -1,0 +1,18 @@
+{
+	"name": "Ubuntu & Rust",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"dockerComposeFile": "docker-compose.yaml",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"rust-lang.rust-analyzer"
+			]
+		}
+	},
+	"postCreateCommand": ".devcontainer/postCreate.sh"
+}
