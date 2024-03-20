@@ -66,17 +66,17 @@ pub fn listener_fn(
 
         #[no_mangle]
         pub #constness #unsafety extern "C" fn #name() -> i32 {
-            use contour_rust_plugin_sdk::extism_pdk;
+            use contour_rust_pdk::extism_pdk;
 
             let input = extism_pdk::input();
 
             match input {
                 Ok(input) => {
-                    let extism_pdk::Json(json): contour_rust_plugin_sdk::extism_pdk::Json<serde_json::Value> = input;
-                    let generic_input: contour_rust_plugin_sdk::io::HandlerInput::<serde_json::Value> = serde_json::from_value(json.clone()).unwrap();
+                    let extism_pdk::Json(json): contour_rust_pdk::extism_pdk::Json<serde_json::Value> = input;
+                    let generic_input: contour_rust_pdk::io::HandlerInput::<serde_json::Value> = serde_json::from_value(json.clone()).unwrap();
 
                     if generic_input.command_type == #command_type {
-                        let input: contour_rust_plugin_sdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json).unwrap();
+                        let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json).unwrap();
                         let output = match #name_inner(input.command) {
                             Ok(x) => x,
                             Err(rc) => {
