@@ -4,7 +4,7 @@
 pub mod csv;
 
 pub use contour_interface::{command, io, models};
-pub use contour_macros::{json_schema, listener_fn};
+pub use contour_macros::listener_fn;
 
 use anyhow::Result;
 pub use extism_pdk::{self, FnResult};
@@ -125,19 +125,19 @@ pub fn query_tags<T: DeserializeOwned + Send + Sync>(
 
 pub fn insert_agent<A: Serialize>(input: io::InputAgent<A>) -> Result<Uuid> {
     let result = unsafe { insert_agent_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn insert_request<B: Serialize, M: Serialize>(input: io::InputRequest<B, M>) -> Result<Uuid> {
     let result = unsafe { insert_request_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn insert_entry<E: Serialize>(input: io::InputEntry<E>) -> Result<Uuid> {
     let result = unsafe { insert_entry_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
@@ -148,25 +148,25 @@ pub fn insert_lines(input: io::InputLines) -> Result<()> {
 
 pub fn insert_resource<R: Serialize>(input: io::InputResource<R>) -> Result<Uuid> {
     let result = unsafe { insert_resource_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn insert_tag<T: Serialize>(input: io::InputTag<T>) -> Result<Uuid> {
     let result = unsafe { insert_tag_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn upsert_agent<A: Serialize>(input: io::InputAgent<A>) -> Result<Uuid> {
     let result = unsafe { upsert_agent_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn upsert_entry<E: Serialize>(input: io::InputEntry<E>) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
@@ -177,13 +177,13 @@ pub fn upsert_lines(input: io::InputLines) -> Result<()> {
 
 pub fn upsert_resource<R: Serialize>(input: io::InputResource<R>) -> Result<Uuid> {
     let result = unsafe { upsert_resource_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
 pub fn upsert_tag<T: Serialize>(input: io::InputTag<T>) -> Result<Uuid> {
     let result = unsafe { upsert_tag_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).unwrap();
+    let output = Uuid::from_str(&result)?;
     Ok(output)
 }
 
