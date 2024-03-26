@@ -183,7 +183,7 @@ pub fn upsert_lines(input: io::InputLines) -> Result<()> {
     Ok(())
 }
 
-pub fn upsert_entry_and_lines<E: Serialize>(input: io::InputEntry<E>) -> Result<Uuid> {
+pub fn upsert_entry_and_lines<E: Serialize>(input: io::InputEntryAndLines<E>) -> Result<Uuid> {
     let result = unsafe { upsert_entry_and_lines_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
