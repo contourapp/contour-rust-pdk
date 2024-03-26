@@ -42,6 +42,7 @@ extern "ExtismHost" {
     fn upsert_tag_host(input: String) -> String;
     fn scrape_sierrapay_host(input: String) -> String;
     fn scrape_cryptopay_host(input: String) -> String;
+    fn make_request_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -71,6 +72,7 @@ pub mod host_fns {
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn scrape_sierrapay_host(input: String) -> Result<String>;
         pub fn scrape_cryptopay_host(input: String) -> Result<String>;
+        pub fn make_request_host(input: String) -> Result<String>;
     }
 }
 
@@ -206,5 +208,10 @@ pub fn scrape_sierrapay(input: io::ScrapingArgs) -> Result<String> {
 
 pub fn scrape_cryptopay(input: io::ScrapingArgs) -> Result<String> {
     let result = unsafe { scrape_cryptopay_host(serde_json::to_string(&input)?)? };
+    Ok(result)
+}
+
+pub fn make_request<B: Serialize, M: Serialize>(input: io::InputRequest<B, M>) -> Result<String> {
+    let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
     Ok(result)
 }
