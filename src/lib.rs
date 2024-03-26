@@ -211,7 +211,10 @@ pub fn scrape_cryptopay(input: io::ScrapingArgs) -> Result<String> {
     Ok(result)
 }
 
-pub fn make_request<B: Serialize, M: Serialize>(input: io::InputRequest<B, M>) -> Result<String> {
+pub fn make_request<B: Serialize, M: Serialize, R: DeserializeOwned + Send + Sync>(
+    input: io::InputRequest<B, M>,
+) -> Result<R> {
     let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
-    Ok(result)
+    let output = serde_json::from_str(&result)?;
+    Ok(output)
 }
