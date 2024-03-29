@@ -136,6 +136,7 @@ pub struct RequestBuilder<B, M> {
     method: String,
     headers: HashMap<String, String>,
     query_params: HashMap<String, String>,
+    query_parameters: Vec<(String, String)>,
     body: Option<B>,
     metadata: Option<M>,
     metadata_type: String,
@@ -149,6 +150,7 @@ impl<B, M> RequestBuilder<B, M> {
             endpoint: path,
             method,
             query_params: HashMap::default(),
+            query_parameters: Vec::new(),
             headers: HashMap::default(),
             body: None,
             metadata: None,
@@ -164,6 +166,11 @@ impl<B, M> RequestBuilder<B, M> {
 
     pub fn add_query_params(mut self, query_params: HashMap<String, String>) -> Self {
         self.query_params = query_params;
+        self
+    }
+
+    pub fn add_query_parameters(mut self, query_parameters: Vec<(String, String)>) -> Self {
+        self.query_parameters = query_parameters;
         self
     }
 
