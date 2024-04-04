@@ -14,44 +14,11 @@ pub enum Effective {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InputEntry<E> {
-    pub effective: Effective,
-    pub source_key: String,
-    pub entry: E,
-    pub entry_type: String,
-}
-
-impl<E> InputEntry<E> {
-    pub fn new(effective: Effective, source_key: String, entry: E) -> Self {
-        let entry_type = get_type(&entry);
-
-        Self {
-            effective,
-            source_key,
-            entry,
-            entry_type,
-        }
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum InputLineType {
     Receivable,
     Asset,
     Liability,
     Equity,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InputLines {
-    pub entry_id: Uuid,
-    pub lines: Vec<InputLine>,
-}
-
-impl InputLines {
-    pub fn new(entry_id: Uuid, lines: Vec<InputLine>) -> Self {
-        Self { entry_id, lines }
-    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
