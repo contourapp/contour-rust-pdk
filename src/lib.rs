@@ -12,6 +12,7 @@ pub use contour_macros::listener_fn;
 
 use anyhow::Result;
 pub use extism_pdk::{self, FnResult};
+use graphql_client::{GraphQLQuery, Response};
 pub use rust_decimal;
 pub use rust_decimal_macros::dec;
 use serde::{de::DeserializeOwned, Serialize};
@@ -21,6 +22,7 @@ use uuid::Uuid;
 #[cfg(target_arch = "wasm32")]
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
+    fn query_host(input: String) -> String;
     fn query_agent_host(input: String) -> String;
     fn query_dimension_host(input: String) -> String;
     fn query_entry_host(input: String) -> String;
@@ -51,6 +53,7 @@ pub mod host_fns {
     use anyhow::Result;
 
     extern "C" {
+        pub fn query_host(input: String) -> Result<String>;
         pub fn query_agent_host(input: String) -> Result<String>;
         pub fn query_dimension_host(input: String) -> Result<String>;
         pub fn query_entry_host(input: String) -> Result<String>;
@@ -78,6 +81,13 @@ pub mod host_fns {
 
 #[cfg(not(target_arch = "wasm32"))]
 use host_fns::*;
+
+pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::ResponseData>> {
+    let json = Q::build_query(variables);
+    let result = unsafe { query_host(serde_json::to_string(&json)?)? };
+    let output: Response<Q::ResponseData> = serde_json::from_str(&result)?;
+    Ok(output)
+}
 
 pub fn query_agent<A: DeserializeOwned>(input: io::QueryAgent) -> Result<Option<models::Agent<A>>> {
     let result = unsafe { query_agent_host(serde_json::to_string(&input)?)? };
