@@ -109,7 +109,7 @@ pub struct Entry<E: Send + Sync> {
     pub created_at: DateTime<Utc>,
     pub effective_at: DateTime<Utc>,
     pub status: EntryStatus,
-    pub entry: E,
+    pub entry: Option<E>,
     pub entry_type: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
@@ -254,7 +254,7 @@ pub struct Resource<Res: Send + Sync> {
     pub unit: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
-    pub resource: Res,
+    pub resource: Option<Res>,
     pub resource_type: String,
     #[serde(
         serialize_with = "serialize_range",
@@ -272,7 +272,7 @@ pub struct Agent<A> {
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
     pub parent_id: Option<Uuid>,
-    pub agent: A,
+    pub agent: Option<A>,
     pub agent_type: String,
     #[serde(
         serialize_with = "serialize_range",
