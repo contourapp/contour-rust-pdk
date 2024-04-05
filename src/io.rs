@@ -85,44 +85,35 @@ impl InputLine {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputRequest<B, M> {
+pub struct InputRequest<B> {
     pub domain: String,
     pub endpoint: String,
     pub method: String,
-    pub query_params: HashMap<String, String>,
-    pub query_parameters: Vec<(String, String)>,
-    pub body: Option<B>,
+    pub parameters: Vec<(String, String)>,
     pub headers: HashMap<String, String>,
-    pub metadata: Option<M>,
-    pub metadata_type: String,
+    pub body: Option<B>,
     pub response_type: String,
 }
 
-pub struct RequestBuilder<B, M> {
+pub struct RequestBuilder<B> {
     domain: String,
     endpoint: String,
     method: String,
+    parameters: Vec<(String, String)>,
     headers: HashMap<String, String>,
-    query_params: HashMap<String, String>,
-    query_parameters: Vec<(String, String)>,
     body: Option<B>,
-    metadata: Option<M>,
-    metadata_type: String,
     response_type: String,
 }
 
-impl<B, M> RequestBuilder<B, M> {
+impl<B> RequestBuilder<B> {
     pub fn new(domain: String, path: String, method: String, response_type: String) -> Self {
         Self {
             domain,
             endpoint: path,
             method,
-            query_params: HashMap::default(),
-            query_parameters: Vec::new(),
+            parameters: Vec::new(),
             headers: HashMap::default(),
             body: None,
-            metadata: None,
-            metadata_type: "()".to_string(),
             response_type,
         }
     }
@@ -132,13 +123,8 @@ impl<B, M> RequestBuilder<B, M> {
         self
     }
 
-    pub fn add_query_params(mut self, query_params: HashMap<String, String>) -> Self {
-        self.query_params = query_params;
-        self
-    }
-
-    pub fn add_query_parameters(mut self, query_parameters: Vec<(String, String)>) -> Self {
-        self.query_parameters = query_parameters;
+    pub fn add_parameters(mut self, query_parameters: Vec<(String, String)>) -> Self {
+        self.parameters = query_parameters;
         self
     }
 
@@ -147,23 +133,14 @@ impl<B, M> RequestBuilder<B, M> {
         Ok(self)
     }
 
-    pub fn add_metadata(mut self, metadata: M) -> Result<Self> {
-        self.metadata_type = get_type(&metadata);
-        self.metadata = Some(metadata);
-        Ok(self)
-    }
-
-    pub fn build(self) -> InputRequest<B, M> {
+    pub fn build(self) -> InputRequest<B> {
         InputRequest {
             domain: self.domain,
             endpoint: self.endpoint,
             method: self.method,
-            query_params: self.query_params,
-            query_parameters: self.query_parameters,
+            parameters: self.parameters,
             body: self.body,
             headers: self.headers,
-            metadata: self.metadata,
-            metadata_type: self.metadata_type,
             response_type: self.response_type,
         }
     }
