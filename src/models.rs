@@ -54,14 +54,14 @@ pub enum CommandStatus {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Command<V, B, M> {
+pub struct Command<V> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub started_at: Option<DateTime<Utc>>,
     pub finished_at: Option<DateTime<Utc>>,
     pub command_type: String,
     pub instance_id: Option<Uuid>,
-    pub command: InterfaceCommand<V, B, M>,
+    pub command: InterfaceCommand<V>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
