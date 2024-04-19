@@ -41,7 +41,8 @@ extern "ExtismHost" {
     fn upsert_tag_host(input: String) -> String;
     fn scrape_sierrapay_host(input: String) -> String;
     fn scrape_cryptopay_host(input: String) -> String;
-    fn scrape_everwash_host(input: String) -> String;
+    fn scrape_everwash_subscribers_host(input: String) -> String;
+    fn scrape_everwash_payments_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
 }
 
@@ -70,7 +71,8 @@ pub mod host_fns {
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn scrape_sierrapay_host(input: String) -> Result<String>;
         pub fn scrape_cryptopay_host(input: String) -> Result<String>;
-        pub fn scrape_everwash_host(input: String) -> Result<String>;
+        pub fn scrape_everwash_subscribers_host(input: String) -> Result<String>;
+        pub fn scrape_everwash_payments_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
     }
 }
@@ -189,8 +191,13 @@ pub fn scrape_cryptopay(input: io::ScrapingArgs) -> Result<String> {
     Ok(result)
 }
 
-pub fn scrape_everwash(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_everwash_host(serde_json::to_string(&input)?)? };
+pub fn scrape_everwash_subscribers(input: io::ScrapingArgs) -> Result<String> {
+    let result = unsafe { scrape_everwash_subscribers_host(serde_json::to_string(&input)?)? };
+    Ok(result)
+}
+
+pub fn scrape_everwash_payments(input: io::ScrapingArgs) -> Result<String> {
+    let result = unsafe { scrape_everwash_payments_host(serde_json::to_string(&input)?)? };
     Ok(result)
 }
 
