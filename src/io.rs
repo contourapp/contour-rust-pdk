@@ -7,11 +7,17 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use uuid::Uuid;
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct DateTimeRange {
+    pub start: DateTime<Utc>,
+    pub end: DateTime<Utc>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Effective {
     Date(NaiveDate),
     DateTime(DateTime<Utc>),
-    DateTimeRange(DateTime<Utc>, DateTime<Utc>),
+    DateTimeRange(DateTimeRange),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
