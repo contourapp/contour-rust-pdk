@@ -280,15 +280,8 @@ impl DeleteAgent {
 pub struct HandlerInput<C> {
     pub command_type: String,
     pub command: C,
-}
-
-impl<C> HandlerInput<C> {
-    pub fn new(command_type: String, command: C) -> Self {
-        Self {
-            command_type,
-            command,
-        }
-    }
+    #[serde(default)]
+    pub start_datetime: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -401,6 +394,7 @@ pub struct ScrapingArgs {
     pub password: String,
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
+    pub location: Option<String>,
 }
 
 #[cfg(test)]
