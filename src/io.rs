@@ -11,6 +11,7 @@ use uuid::Uuid;
 pub enum Effective {
     Date(NaiveDate),
     DateTime(DateTime<Utc>),
+    DateTimeRange(DateTime<Utc>, DateTime<Utc>),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
