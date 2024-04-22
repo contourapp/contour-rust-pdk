@@ -9,8 +9,8 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct DateTimeRange {
-    pub start: DateTime<Utc>,
-    pub end: DateTime<Utc>,
+    pub from: DateTime<Utc>,
+    pub until: DateTime<Utc>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
