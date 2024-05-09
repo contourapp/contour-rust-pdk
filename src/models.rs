@@ -10,7 +10,7 @@ use super::{command::Command as InterfaceCommand, config::ConfigPlugin};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use rust_decimal::Decimal;
-use serde::{de::DeserializeOwned, Deserialize, Serialize, Serializer};
+use serde::{Deserialize, Serialize, Serializer};
 use uuid::Uuid;
 
 #[derive(Debug, Clone)]
@@ -119,12 +119,6 @@ pub struct Entry<E: Send + Sync> {
         flatten
     )]
     pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-pub struct Upserted<Rec: DeserializeOwned + Clone> {
-    pub inserted: bool,
-    pub changed: bool,
-    pub record: Rec,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Copy, Eq, PartialEq)]
