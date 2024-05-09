@@ -338,6 +338,12 @@ pub struct ScrapingArgs {
     pub location: Option<String>,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HandlerInput<C> {
+    pub command_type: String,
+    pub command: C,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
