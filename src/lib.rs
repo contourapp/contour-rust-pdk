@@ -139,49 +139,49 @@ pub fn query_tags<T: DeserializeOwned + Send + Sync>(
     Ok(output)
 }
 
-pub fn upsert_agent<A: Serialize>(input: io::InputAgent<A>) -> Result<Uuid> {
+pub fn upsert_agent<A: Serialize>(input: io::AgentInput<A>) -> Result<Uuid> {
     let result = unsafe { upsert_agent_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn upsert_resource<R: Serialize>(input: io::InputResource<R>) -> Result<Uuid> {
+pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { upsert_resource_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn upsert_tag<T: Serialize>(input: io::InputTag<T>) -> Result<Uuid> {
+pub fn upsert_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
     let result = unsafe { upsert_tag_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn upsert_entry<E: Serialize>(input: io::InputEntryAndLines<E>) -> Result<Uuid> {
+pub fn upsert_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn update_agent<A: Serialize>(input: io::InputAgent<A>) -> Result<Uuid> {
+pub fn update_agent<A: Serialize>(input: io::AgentInput<A>) -> Result<Uuid> {
     let result = unsafe { update_agent_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn update_resource<R: Serialize>(input: io::InputResource<R>) -> Result<Uuid> {
+pub fn update_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { update_resource_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn update_tag<T: Serialize>(input: io::InputTag<T>) -> Result<Uuid> {
+pub fn update_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
     let result = unsafe { update_tag_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
 
-pub fn update_entry<E: Serialize>(input: io::InputEntryAndLines<E>) -> Result<Uuid> {
+pub fn update_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { update_entry_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
@@ -213,7 +213,7 @@ pub fn scrape_jolt(input: io::ScrapingArgs) -> Result<String> {
 }
 
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
-    input: io::InputRequest<B>,
+    input: io::RequestInput<B>,
 ) -> Result<R> {
     let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
     let output = serde_json::from_str(&result)?;

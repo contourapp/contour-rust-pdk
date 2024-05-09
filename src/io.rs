@@ -4,7 +4,6 @@ use anyhow::Result;
 use chrono::{DateTime, NaiveDate, Utc};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -29,16 +28,16 @@ pub enum InputLineType {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputEntryAndLines<E> {
+pub struct EntryInput<E> {
     pub effective: Effective,
     pub source_key: String,
     pub entry: E,
     pub entry_type: String,
-    pub lines: Vec<InputLine>,
+    pub lines: Vec<LineInput>,
 }
 
-impl<E> InputEntryAndLines<E> {
-    pub fn new(effective: Effective, source_key: String, entry: E, lines: Vec<InputLine>) -> Self {
+impl<E> EntryInput<E> {
+    pub fn new(effective: Effective, source_key: String, entry: E, lines: Vec<LineInput>) -> Self {
         let entry_type = get_type(&entry);
 
         Self {
@@ -52,7 +51,7 @@ impl<E> InputEntryAndLines<E> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputLine {
+pub struct LineInput {
     pub line_type: InputLineType,
     pub consumes_line_id: Option<Uuid>,
     pub resource_id: Uuid,
@@ -65,7 +64,7 @@ pub struct InputLine {
 }
 
 #[allow(clippy::too_many_arguments)]
-impl InputLine {
+impl LineInput {
     pub fn new(
         line_type: InputLineType,
         consumes_line_id: Option<Uuid>,
@@ -92,7 +91,7 @@ impl InputLine {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputRequest<B> {
+pub struct RequestInput<B> {
     pub domain: String,
     pub endpoint: String,
     pub method: String,
@@ -140,8 +139,8 @@ impl<B> RequestBuilder<B> {
         Ok(self)
     }
 
-    pub fn build(self) -> InputRequest<B> {
-        InputRequest {
+    pub fn build(self) -> RequestInput<B> {
+        RequestInput {
             domain: self.domain,
             endpoint: self.endpoint,
             method: self.method,
@@ -154,7 +153,7 @@ impl<B> RequestBuilder<B> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputResource<R> {
+pub struct ResourceInput<R> {
     pub name: Option<String>,
     pub unit: String,
     pub source_key: String,
@@ -162,7 +161,7 @@ pub struct InputResource<R> {
     pub resource_type: String,
 }
 
-impl<R> InputResource<R> {
+impl<R> ResourceInput<R> {
     pub fn new(name: Option<String>, unit: String, source_key: String, resource: R) -> Self {
         let resource_type = get_type(&resource);
         Self {
@@ -176,19 +175,19 @@ impl<R> InputResource<R> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputDimension {
+pub struct DimensionInput {
     pub slug: String,
     pub name: Option<String>,
 }
 
-impl InputDimension {
+impl DimensionInput {
     pub fn new(slug: String, name: Option<String>) -> Self {
         Self { slug, name }
     }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputTag<T> {
+pub struct TagInput<T> {
     pub name: Option<String>,
     pub source_key: String,
     pub dimension_id: Uuid,
@@ -197,7 +196,7 @@ pub struct InputTag<T> {
     pub tag_type: String,
 }
 
-impl<T> InputTag<T> {
+impl<T> TagInput<T> {
     pub fn new(
         name: Option<String>,
         source_key: String,
@@ -219,14 +218,14 @@ impl<T> InputTag<T> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputAgent<A> {
+pub struct AgentInput<A> {
     pub source_key: String,
     pub name: Option<String>,
     pub agent: A,
     pub agent_type: String,
 }
 
-impl<A> InputAgent<A> {
+impl<A> AgentInput<A> {
     pub fn new(source_key: String, name: Option<String>, agent: A) -> Self {
         let agent_type = get_type(&agent);
         Self {
@@ -235,71 +234,6 @@ impl<A> InputAgent<A> {
             agent,
             agent_type,
         }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct InputLineTag {
-    pub line_id: Uuid,
-    pub tag_id: Uuid,
-}
-
-impl InputLineTag {
-    pub fn new(line_id: Uuid, tag_id: Uuid) -> Self {
-        Self { line_id, tag_id }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DeleteEntry {
-    pub source_key: String,
-}
-
-impl DeleteEntry {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DeleteResource {
-    pub source_key: String,
-}
-
-impl DeleteResource {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DeleteAgent {
-    pub source_key: String,
-}
-
-impl DeleteAgent {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct HandlerInput<C> {
-    pub command_type: String,
-    pub command: C,
-    #[serde(default)]
-    pub start_datetime: Option<DateTime<Utc>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct StateOutput {
-    pub archived: bool,
-    pub data: Value,
-}
-
-impl StateOutput {
-    pub fn new(archived: bool, data: Value) -> Self {
-        Self { archived, data }
     }
 }
 
@@ -428,7 +362,7 @@ mod tests {
             name: "test".to_string(),
         };
 
-        let input_resource = InputResource::new(
+        let input_resource = ResourceInput::new(
             Some("test".to_string()),
             "test".to_string(),
             "test".to_string(),
