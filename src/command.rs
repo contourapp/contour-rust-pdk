@@ -10,7 +10,7 @@ pub enum Command<V> {
     Cron(Cron<V>),
     Manual(Manual<V>),
     Email(Email),
-    Created(Created<V>),
+    Inserted(Inserted<V>),
     Updated(Updated<V>),
     Deleted(Deleted),
 }
@@ -44,34 +44,10 @@ pub struct Email {
     pub attachments: Vec<Attachment>,
 }
 
-impl Email {
-    pub fn new(
-        from: String,
-        to: Vec<String>,
-        subject: String,
-        body: String,
-        attachments: Vec<Attachment>,
-    ) -> Self {
-        Self {
-            from,
-            to,
-            subject,
-            body,
-            attachments,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Created<R> {
+pub struct Inserted<R> {
     pub id: Uuid,
     pub record: R,
-}
-
-impl<R> Created<R> {
-    pub fn new(id: Uuid, record: R) -> Self {
-        Self { id, record }
-    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -80,19 +56,7 @@ pub struct Updated<R> {
     pub record: R,
 }
 
-impl<R> Updated<R> {
-    pub fn new(id: Uuid, record: R) -> Self {
-        Self { id, record }
-    }
-}
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Deleted {
     pub id: Uuid,
-}
-
-impl Deleted {
-    pub fn new(id: Uuid) -> Self {
-        Self { id }
-    }
 }
