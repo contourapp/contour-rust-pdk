@@ -20,7 +20,7 @@ pub enum Effective {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub enum InputLineType {
+pub enum LineTypeInput {
     Receivable,
     Asset,
     Liability,
@@ -52,7 +52,7 @@ impl<E> EntryInput<E> {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct LineInput {
-    pub line_type: InputLineType,
+    pub line_type: LineTypeInput,
     pub consumes_line_id: Option<Uuid>,
     pub resource_id: Uuid,
     pub agent_id: Option<Uuid>,
@@ -66,7 +66,7 @@ pub struct LineInput {
 #[allow(clippy::too_many_arguments)]
 impl LineInput {
     pub fn new(
-        line_type: InputLineType,
+        line_type: LineTypeInput,
         consumes_line_id: Option<Uuid>,
         resource_id: Uuid,
         agent_id: Option<Uuid>,

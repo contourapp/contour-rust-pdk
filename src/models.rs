@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::config::{ConfigDomainAuth, ConfigDomainRateLimit, ConfigListenerConfig};
-use super::io::InputLineType;
+use super::io::LineTypeInput;
 use super::{command::Command as InterfaceCommand, config::ConfigPlugin};
 
 use anyhow::Result;
@@ -141,13 +141,13 @@ impl From<&str> for &LineType {
     }
 }
 
-impl From<&InputLineType> for &LineType {
-    fn from(method: &InputLineType) -> Self {
+impl From<&LineTypeInput> for &LineType {
+    fn from(method: &LineTypeInput) -> Self {
         match method {
-            InputLineType::Receivable => &LineType::Receivable,
-            InputLineType::Asset => &LineType::Asset,
-            InputLineType::Liability => &LineType::Liability,
-            InputLineType::Equity => &LineType::Equity,
+            LineTypeInput::Receivable => &LineType::Receivable,
+            LineTypeInput::Asset => &LineType::Asset,
+            LineTypeInput::Liability => &LineType::Liability,
+            LineTypeInput::Equity => &LineType::Equity,
         }
     }
 }
