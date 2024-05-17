@@ -164,7 +164,6 @@ pub struct Line {
     pub consumes_line_id: Option<Uuid>,
     pub entry_id: Option<Uuid>,
     pub resource_id: Uuid,
-    pub agent_id: Option<Uuid>,
     #[serde(
         serialize_with = "serialize_range",
         deserialize_with = "deserialize_range",
@@ -250,24 +249,6 @@ pub struct Resource<Res: Send + Sync> {
     pub instance_id: Option<Uuid>,
     pub resource: Option<Res>,
     pub resource_type: String,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Agent<A> {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub name: Option<String>,
-    pub source_key: Option<String>,
-    pub instance_id: Option<Uuid>,
-    pub parent_id: Option<Uuid>,
-    pub agent: Option<A>,
-    pub agent_type: String,
     #[serde(
         serialize_with = "serialize_range",
         deserialize_with = "deserialize_range",

@@ -55,7 +55,6 @@ pub struct LineInput {
     pub line_type: LineTypeInput,
     pub consumes_line_id: Option<Uuid>,
     pub resource_id: Uuid,
-    pub agent_id: Option<Uuid>,
     pub debit: Decimal,
     pub credit: Decimal,
     pub ratio: Decimal,
@@ -69,7 +68,6 @@ impl LineInput {
         line_type: LineTypeInput,
         consumes_line_id: Option<Uuid>,
         resource_id: Uuid,
-        agent_id: Option<Uuid>,
         debit: Decimal,
         credit: Decimal,
         ratio: Decimal,
@@ -80,7 +78,6 @@ impl LineInput {
             line_type,
             consumes_line_id,
             resource_id,
-            agent_id,
             debit,
             credit,
             ratio,
@@ -214,37 +211,6 @@ impl<T> TagInput<T> {
             tag,
             tag_type,
         }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct AgentInput<A> {
-    pub source_key: String,
-    pub name: Option<String>,
-    pub agent: A,
-    pub agent_type: String,
-}
-
-impl<A> AgentInput<A> {
-    pub fn new(source_key: String, name: Option<String>, agent: A) -> Self {
-        let agent_type = get_type(&agent);
-        Self {
-            source_key,
-            name,
-            agent,
-            agent_type,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryAgent {
-    pub source_key: String,
-}
-
-impl QueryAgent {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
     }
 }
 

@@ -23,18 +23,15 @@ use uuid::Uuid;
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
     fn query_host(input: String) -> String;
-    fn query_agent_host(input: String) -> String;
     fn query_dimension_host(input: String) -> String;
     fn query_entry_host(input: String) -> String;
     fn query_last_entry_host(input: String) -> String;
     fn query_resource_host(input: String) -> String;
     fn query_tag_host(input: String) -> String;
     fn query_tags_host(input: String) -> String;
-    fn upsert_agent_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
     fn upsert_entry_host(input: String) -> String;
-    fn update_agent_host(input: String) -> String;
     fn update_resource_host(input: String) -> String;
     fn update_tag_host(input: String) -> String;
     fn update_entry_host(input: String) -> String;
@@ -53,18 +50,15 @@ pub mod host_fns {
 
     extern "C" {
         pub fn query_host(input: String) -> Result<String>;
-        pub fn query_agent_host(input: String) -> Result<String>;
         pub fn query_dimension_host(input: String) -> Result<String>;
         pub fn query_entry_host(input: String) -> Result<String>;
         pub fn query_last_entry_host(input: String) -> Result<String>;
         pub fn query_resource_host(input: String) -> Result<String>;
         pub fn query_tag_host(input: String) -> Result<String>;
         pub fn query_tags_host(input: String) -> Result<String>;
-        pub fn upsert_agent_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn upsert_entry_host(input: String) -> Result<String>;
-        pub fn update_agent_host(input: String) -> Result<String>;
         pub fn update_resource_host(input: String) -> Result<String>;
         pub fn update_tag_host(input: String) -> Result<String>;
         pub fn update_entry_host(input: String) -> Result<String>;
@@ -84,12 +78,6 @@ pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::Res
     let json = Q::build_query(variables);
     let result = unsafe { query_host(serde_json::to_string(&json)?)? };
     let output: Response<Q::ResponseData> = serde_json::from_str(&result)?;
-    Ok(output)
-}
-
-pub fn query_agent<A: DeserializeOwned>(input: io::QueryAgent) -> Result<Option<models::Agent<A>>> {
-    let result = unsafe { query_agent_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
     Ok(output)
 }
 
@@ -139,12 +127,6 @@ pub fn query_tags<T: DeserializeOwned + Send + Sync>(
     Ok(output)
 }
 
-pub fn upsert_agent<A: Serialize>(input: io::AgentInput<A>) -> Result<Uuid> {
-    let result = unsafe { upsert_agent_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
-}
-
 pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { upsert_resource_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
@@ -159,12 +141,6 @@ pub fn upsert_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
 
 pub fn upsert_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
-}
-
-pub fn update_agent<A: Serialize>(input: io::AgentInput<A>) -> Result<Uuid> {
-    let result = unsafe { update_agent_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
 }
