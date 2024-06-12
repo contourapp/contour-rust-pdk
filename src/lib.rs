@@ -40,6 +40,7 @@ extern "ExtismHost" {
     fn scrape_everwash_subscribers_host(input: String) -> String;
     fn scrape_everwash_payments_host(input: String) -> String;
     fn scrape_jolt_host(input: String) -> String;
+    fn scrape_iaccess_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
 }
 
@@ -67,6 +68,7 @@ pub mod host_fns {
         pub fn scrape_everwash_subscribers_host(input: String) -> Result<String>;
         pub fn scrape_everwash_payments_host(input: String) -> Result<String>;
         pub fn scrape_jolt_host(input: String) -> Result<String>;
+        pub fn scrape_iaccess_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
     }
 }
@@ -185,6 +187,11 @@ pub fn scrape_everwash_payments(input: io::ScrapingArgs) -> Result<String> {
 
 pub fn scrape_jolt(input: io::ScrapingArgs) -> Result<String> {
     let result = unsafe { scrape_jolt_host(serde_json::to_string(&input)?)? };
+    Ok(result)
+}
+
+pub fn scrape_iaccess(input: io::ScrapingArgs) -> Result<String> {
+    let result = unsafe { scrape_iaccess_host(serde_json::to_string(&input)?)? };
     Ok(result)
 }
 
