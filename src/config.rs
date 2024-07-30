@@ -67,6 +67,7 @@ pub enum ConfigListenerConfig {
     Upload(ConfigUpload),
     Cron(ConfigCron),
     Email,
+    Scraper(ConfigScraper),
     Request(ConfigResponse),
     Created(ConfigRecordChanged),
     Updated(ConfigRecordChanged),
@@ -80,6 +81,7 @@ impl std::fmt::Display for ConfigListenerConfig {
             ConfigListenerConfig::Upload(upload) => write!(f, "Upload<{}>", upload.model),
             ConfigListenerConfig::Cron(cron) => write!(f, "Cron<{}>", cron.model),
             ConfigListenerConfig::Email => write!(f, "Email"),
+            ConfigListenerConfig::Scraper(_) => write!(f, "Scraper"),
             ConfigListenerConfig::Request(request) => {
                 write!(f, "Request<{}, {}>", request.body, request.metadata)
             }
@@ -109,6 +111,11 @@ pub struct ConfigCron {
     pub after: Option<String>,
     #[serde(default)]
     pub until: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ConfigScraper {
+    pub actor_id: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
