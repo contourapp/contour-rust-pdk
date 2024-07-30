@@ -47,7 +47,7 @@ pub struct Email {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Scraper<C> {
-    pub command: C,
+    pub items: Vec<C>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
