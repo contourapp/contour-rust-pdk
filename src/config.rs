@@ -115,6 +115,7 @@ pub struct ConfigCron {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ConfigScraper {
+    pub model: String,
     pub actor_id: String,
 }
 
