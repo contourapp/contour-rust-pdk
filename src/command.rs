@@ -10,6 +10,7 @@ pub enum Command<V> {
     Cron(Cron<V>),
     Manual(Manual<V>),
     Email(Email),
+    Scraper(Scraper<V>),
     Inserted(Inserted<V>),
     Updated(Updated<V>),
     Deleted(Deleted),
@@ -42,6 +43,11 @@ pub struct Email {
     pub subject: String,
     pub body: String,
     pub attachments: Vec<Attachment>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Scraper<C> {
+    pub command: C,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
