@@ -35,12 +35,6 @@ extern "ExtismHost" {
     fn update_resource_host(input: String) -> String;
     fn update_tag_host(input: String) -> String;
     fn update_entry_host(input: String) -> String;
-    fn scrape_sierrapay_host(input: String) -> String;
-    fn scrape_cryptopay_host(input: String) -> String;
-    fn scrape_everwash_subscribers_host(input: String) -> String;
-    fn scrape_everwash_payments_host(input: String) -> String;
-    fn scrape_jolt_host(input: String) -> String;
-    fn scrape_iaccess_payments_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
 }
 
@@ -63,12 +57,6 @@ pub mod host_fns {
         pub fn update_resource_host(input: String) -> Result<String>;
         pub fn update_tag_host(input: String) -> Result<String>;
         pub fn update_entry_host(input: String) -> Result<String>;
-        pub fn scrape_sierrapay_host(input: String) -> Result<String>;
-        pub fn scrape_cryptopay_host(input: String) -> Result<String>;
-        pub fn scrape_everwash_subscribers_host(input: String) -> Result<String>;
-        pub fn scrape_everwash_payments_host(input: String) -> Result<String>;
-        pub fn scrape_jolt_host(input: String) -> Result<String>;
-        pub fn scrape_iaccess_payments_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
     }
 }
@@ -163,36 +151,6 @@ pub fn update_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { update_entry_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
-}
-
-pub fn scrape_sierrapay(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_sierrapay_host(serde_json::to_string(&input)?)? };
-    Ok(result)
-}
-
-pub fn scrape_cryptopay(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_cryptopay_host(serde_json::to_string(&input)?)? };
-    Ok(result)
-}
-
-pub fn scrape_everwash_subscribers(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_everwash_subscribers_host(serde_json::to_string(&input)?)? };
-    Ok(result)
-}
-
-pub fn scrape_everwash_payments(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_everwash_payments_host(serde_json::to_string(&input)?)? };
-    Ok(result)
-}
-
-pub fn scrape_jolt(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_jolt_host(serde_json::to_string(&input)?)? };
-    Ok(result)
-}
-
-pub fn scrape_iaccess(input: io::ScrapingArgs) -> Result<String> {
-    let result = unsafe { scrape_iaccess_payments_host(serde_json::to_string(&input)?)? };
-    Ok(result)
 }
 
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(

@@ -294,16 +294,6 @@ pub fn get_type<T>(val: &T) -> String {
         .to_string()
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ScrapingArgs {
-    pub base_url: String,
-    pub username: String,
-    pub password: String,
-    pub start_date: NaiveDate,
-    pub end_date: NaiveDate,
-    pub location: Option<String>,
-}
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct HandlerInput<C> {
     pub command_type: String,
