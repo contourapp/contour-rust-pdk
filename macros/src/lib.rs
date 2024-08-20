@@ -59,19 +59,19 @@ pub fn listener_fn(
 
     quote! {
         #[no_mangle]
-        pub #constness #unsafety extern "C" fn #name() -> i32 {
+        pub #constness #unsafety extern "C" fn #name() -> i32 {            
             #constness #unsafety fn inner #generics(#input_name: #input_ty) #output #block
-            let extism_pdk::Json(json): contour_rust_pdk::extism_pdk::Json<serde_json::Value> = extism_pdk::unwrap!(extism_pdk::input());
-            let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = extism_pdk::unwrap!(serde_json::from_value(json));
+            let contour_rust_pdk::extism_pdk::Json(json): contour_rust_pdk::contour_rust_pdk::extism_pdk::Json<serde_json::Value> = contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::input());
+            let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = contour_rust_pdk::extism_pdk::unwrap!(serde_json::from_value(json));
 
             let output = if input.command_type == #command_type {
                 match inner(input.command) {
                     Ok(x) => x,
                     Err(rc) => {
                         let err = format!("{:?}", rc.0);
-                        let mut mem = extism_pdk::Memory::from_bytes(&err).unwrap();
+                        let mut mem = contour_rust_pdk::extism_pdk::Memory::from_bytes(&err).unwrap();
                         unsafe {
-                            extism_pdk::extism::error_set(mem.offset());
+                            contour_rust_pdk::extism_pdk::extism::error_set(mem.offset());
                         }
 
                         return rc.1;
@@ -79,7 +79,7 @@ pub fn listener_fn(
                 };
             };
 
-            extism_pdk::unwrap!(extism_pdk::output(&output));
+            contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::output(&output));
             0
         }
     }
