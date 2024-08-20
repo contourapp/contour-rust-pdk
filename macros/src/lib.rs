@@ -61,7 +61,7 @@ pub fn listener_fn(
         #[no_mangle]
         pub #constness #unsafety extern "C" fn #name() -> i32 {            
             #constness #unsafety fn inner #generics(#input_name: #input_ty) #output #block
-            let contour_rust_pdk::extism_pdk::Json(json): contour_rust_pdk::contour_rust_pdk::extism_pdk::Json<serde_json::Value> = contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::input());
+            let contour_rust_pdk::extism_pdk::Json(json): contour_rust_pdk::extism_pdk::Json<serde_json::Value> = contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::input());
             let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = contour_rust_pdk::extism_pdk::unwrap!(serde_json::from_value(json));
 
             let output = if input.command_type == #command_type {
