@@ -285,6 +285,32 @@ impl QueryTags {
     }
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct QueryTagByDataType {
+    pub data_type: String,
+    pub source_key: String,
+}
+
+impl QueryTagByDataType {
+    pub fn new(data_type: String, source_key: String) -> Self {
+        Self {
+            data_type,
+            source_key,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct QueryTagsByDataType {
+    pub data_type: String,
+}
+
+impl QueryTagsByDataType {
+    pub fn new(data_type: String) -> Self {
+        Self { data_type }
+    }
+}
+
 pub fn get_type<T>(val: &T) -> String {
     std::any::type_name_of_val(&val)
         .split("::")
