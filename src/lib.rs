@@ -29,6 +29,8 @@ extern "ExtismHost" {
     fn query_resource_host(input: String) -> String;
     fn query_tag_host(input: String) -> String;
     fn query_tags_host(input: String) -> String;
+    fn query_tag_by_data_type_host(input: String) -> String;
+    fn query_tags_by_data_type_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
     fn upsert_entry_host(input: String) -> String;
@@ -51,6 +53,8 @@ pub mod host_fns {
         pub fn query_resource_host(input: String) -> Result<String>;
         pub fn query_tag_host(input: String) -> Result<String>;
         pub fn query_tags_host(input: String) -> Result<String>;
+        pub fn query_tag_by_data_type_host(input: String) -> Result<String>;
+        pub fn query_tags_by_data_type_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn upsert_entry_host(input: String) -> Result<String>;
@@ -113,6 +117,22 @@ pub fn query_tags<T: DeserializeOwned + Send + Sync>(
     input: io::QueryTags,
 ) -> Result<Vec<models::Tag<T>>> {
     let result = unsafe { query_tags_host(serde_json::to_string(&input)?)? };
+    let output = serde_json::from_str(&result)?;
+    Ok(output)
+}
+
+pub fn query_tag_by_data_type<T: DeserializeOwned + Send + Sync>(
+    input: io::QueryTagByDataType,
+) -> Result<Option<models::Tag<T>>> {
+    let result = unsafe { query_tag_by_data_type_host(serde_json::to_string(&input)?)? };
+    let output = serde_json::from_str(&result)?;
+    Ok(output)
+}
+
+pub fn query_tags_by_data_type<T: DeserializeOwned + Send + Sync>(
+    input: io::QueryTagsByDataType,
+) -> Result<Vec<models::Tag<T>>> {
+    let result = unsafe { query_tags_by_data_type_host(serde_json::to_string(&input)?)? };
     let output = serde_json::from_str(&result)?;
     Ok(output)
 }
