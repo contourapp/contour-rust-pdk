@@ -187,7 +187,7 @@ impl DimensionInput {
 pub struct TagInput<T> {
     pub name: Option<String>,
     pub source_key: String,
-    pub dimension_id: Uuid,
+    pub data_type: String,
     pub parent_id: Option<Uuid>,
     pub tag: T,
     pub tag_type: String,
@@ -197,7 +197,7 @@ impl<T> TagInput<T> {
     pub fn new(
         name: Option<String>,
         source_key: String,
-        dimension_id: Uuid,
+        data_type: String,
         parent_id: Option<Uuid>,
         tag: T,
     ) -> Self {
@@ -206,7 +206,7 @@ impl<T> TagInput<T> {
         Self {
             name,
             source_key,
-            dimension_id,
+            data_type,
             parent_id,
             tag,
             tag_type,
