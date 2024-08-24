@@ -297,25 +297,10 @@ pub struct Request<B, M, Re> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Dimension {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub slug: String,
-    pub name: Option<String>,
-    pub instance_id: Option<Uuid>,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Tag<T: Send + Sync> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
-    pub dimension_id: Uuid,
+    pub data_type: String,
     pub slug: Option<String>,
     pub name: Option<String>,
     pub parent_id: Option<Uuid>,

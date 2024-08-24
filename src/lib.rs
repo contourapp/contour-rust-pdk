@@ -23,12 +23,9 @@ use uuid::Uuid;
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
     fn query_host(input: String) -> String;
-    fn query_dimension_host(input: String) -> String;
     fn query_entry_host(input: String) -> String;
     fn query_last_entry_host(input: String) -> String;
     fn query_resource_host(input: String) -> String;
-    fn query_tag_host(input: String) -> String;
-    fn query_tags_host(input: String) -> String;
     fn query_tag_by_data_type_host(input: String) -> String;
     fn query_tags_by_data_type_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
@@ -47,12 +44,9 @@ pub mod host_fns {
 
     extern "C" {
         pub fn query_host(input: String) -> Result<String>;
-        pub fn query_dimension_host(input: String) -> Result<String>;
         pub fn query_entry_host(input: String) -> Result<String>;
         pub fn query_last_entry_host(input: String) -> Result<String>;
         pub fn query_resource_host(input: String) -> Result<String>;
-        pub fn query_tag_host(input: String) -> Result<String>;
-        pub fn query_tags_host(input: String) -> Result<String>;
         pub fn query_tag_by_data_type_host(input: String) -> Result<String>;
         pub fn query_tags_by_data_type_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
@@ -72,12 +66,6 @@ pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::Res
     let json = Q::build_query(variables);
     let result = unsafe { query_host(serde_json::to_string(&json)?)? };
     let output: Response<Q::ResponseData> = serde_json::from_str(&result)?;
-    Ok(output)
-}
-
-pub fn query_dimension(input: io::QueryDimension) -> Result<Option<models::Dimension>> {
-    let result = unsafe { query_dimension_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
     Ok(output)
 }
 
@@ -101,22 +89,6 @@ pub fn query_resource<R: DeserializeOwned + Send + Sync>(
     input: io::QueryResource,
 ) -> Result<Option<models::Resource<R>>> {
     let result = unsafe { query_resource_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
-}
-
-pub fn query_tag<T: DeserializeOwned + Send + Sync>(
-    input: io::QueryTag,
-) -> Result<Option<models::Tag<T>>> {
-    let result = unsafe { query_tag_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
-}
-
-pub fn query_tags<T: DeserializeOwned + Send + Sync>(
-    input: io::QueryTags,
-) -> Result<Vec<models::Tag<T>>> {
-    let result = unsafe { query_tags_host(serde_json::to_string(&input)?)? };
     let output = serde_json::from_str(&result)?;
     Ok(output)
 }

@@ -172,18 +172,6 @@ impl<R> ResourceInput<R> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DimensionInput {
-    pub slug: String,
-    pub name: Option<String>,
-}
-
-impl DimensionInput {
-    pub fn new(slug: String, name: Option<String>) -> Self {
-        Self { slug, name }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TagInput<T> {
     pub name: Option<String>,
     pub source_key: String,
@@ -238,17 +226,6 @@ impl QueryLastEntry {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryDimension {
-    pub slug: String,
-}
-
-impl QueryDimension {
-    pub fn new(slug: String) -> Self {
-        Self { slug }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct QueryResource {
     pub source_key: String,
 }
@@ -256,32 +233,6 @@ pub struct QueryResource {
 impl QueryResource {
     pub fn new(source_key: String) -> Self {
         Self { source_key }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTag {
-    pub dimension_id: Uuid,
-    pub source_key: String,
-}
-
-impl QueryTag {
-    pub fn new(dimension_id: Uuid, source_key: String) -> Self {
-        Self {
-            dimension_id,
-            source_key,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTags {
-    pub dimension_id: Uuid,
-}
-
-impl QueryTags {
-    pub fn new(dimension_id: Uuid) -> Self {
-        Self { dimension_id }
     }
 }
 
