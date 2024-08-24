@@ -2,7 +2,6 @@
 #![allow(improper_ctypes)]
 
 pub mod command;
-pub mod config;
 pub mod csv;
 pub mod io;
 pub mod models;

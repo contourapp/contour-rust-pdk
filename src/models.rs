@@ -3,10 +3,6 @@ use std::{
     ops::Range,
 };
 
-use super::config::{ConfigDomainAuth, ConfigDomainRateLimit, ConfigListenerConfig};
-use super::io::LineTypeInput;
-use super::{command::Command as InterfaceCommand, config::ConfigPlugin};
-
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use rust_decimal::Decimal;
@@ -46,56 +42,6 @@ where
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum CommandStatus {
-    Pending,
-    Running,
-    Completed,
-    Failed, // Delete this at some point
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Command<V> {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub started_at: Option<DateTime<Utc>>,
-    pub finished_at: Option<DateTime<Utc>>,
-    pub command_type: String,
-    pub instance_id: Option<Uuid>,
-    pub command: InterfaceCommand<V>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum CallResult {
-    Ok,
-    Err,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Call {
-    pub id: Uuid,
-    pub started_at: Option<DateTime<Utc>>,
-    pub finished_at: Option<DateTime<Utc>>,
-    pub result: CallResult,
-    pub command_id: Uuid,
-    pub plugin_id: Uuid,
-    pub ok: Option<serde_json::Value>,
-    pub err: Option<serde_json::Value>,
-    pub downstream_command_ids: Vec<Uuid>,
-    pub log: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct SideEffect {
-    pub id: Uuid,
-    pub started_at: DateTime<Utc>,
-    pub finished_at: Option<DateTime<Utc>>,
-    pub function_name: String,
-    pub input: Option<serde_json::Value>,
-    pub output: Option<serde_json::Value>,
-    pub call_id: Uuid,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum EntryStatus {
     AutoPosted,
     ManuallyPosted,
@@ -129,29 +75,6 @@ pub enum LineType {
     Equity,
 }
 
-impl From<&str> for &LineType {
-    fn from(method: &str) -> Self {
-        match method {
-            "receivable" => &LineType::Receivable,
-            "asset" => &LineType::Asset,
-            "liability" => &LineType::Liability,
-            "equity" => &LineType::Equity,
-            _ => panic!("Invalid line type"),
-        }
-    }
-}
-
-impl From<&LineTypeInput> for &LineType {
-    fn from(method: &LineTypeInput) -> Self {
-        match method {
-            LineTypeInput::Receivable => &LineType::Receivable,
-            LineTypeInput::Asset => &LineType::Asset,
-            LineTypeInput::Liability => &LineType::Liability,
-            LineTypeInput::Equity => &LineType::Equity,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Line {
     pub id: Uuid,
@@ -173,64 +96,12 @@ pub struct Line {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Plugin {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub name: String,
-    pub version: String,
-    pub hash: String,
-    pub data: Vec<u8>,
-    pub config: ConfigPlugin,
-    pub schemas: serde_json::Value,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Instance {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub slug: String,
     pub name: Option<String>,
     pub plugin_id: Uuid,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Listener {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub slug: String,
-    pub instance_id: Uuid,
-    pub listener_type: String,
-    pub config: ConfigListenerConfig,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Domain {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub slug: String,
-    pub instance_id: Uuid,
-    pub environments: HashMap<String, String>,
-    pub headers: HashMap<String, String>,
-    pub auth: ConfigDomainAuth,
-    pub rate_limit: Option<ConfigDomainRateLimit>,
     #[serde(
         serialize_with = "serialize_range",
         deserialize_with = "deserialize_range",
@@ -264,19 +135,6 @@ pub enum RequestMethod {
     Patch,
     Put,
     Delete,
-}
-
-impl From<&str> for RequestMethod {
-    fn from(method: &str) -> Self {
-        match method {
-            "GET" => RequestMethod::Get,
-            "POST" => RequestMethod::Post,
-            "PATCH" => RequestMethod::Patch,
-            "PUT" => RequestMethod::Put,
-            "DELETE" => RequestMethod::Delete,
-            _ => panic!("Invalid request method"),
-        }
-    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
