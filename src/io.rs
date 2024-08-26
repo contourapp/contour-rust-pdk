@@ -176,19 +176,12 @@ pub struct TagInput<T> {
     pub name: Option<String>,
     pub source_key: String,
     pub data_type: String,
-    pub parent_id: Option<Uuid>,
     pub tag: T,
     pub tag_type: String,
 }
 
 impl<T> TagInput<T> {
-    pub fn new(
-        name: Option<String>,
-        source_key: String,
-        data_type: String,
-        parent_id: Option<Uuid>,
-        tag: T,
-    ) -> Self {
+    pub fn new(name: Option<String>, source_key: String, data_type: String, tag: T) -> Self {
         let tag_type = get_type(&tag);
 
         Self {
