@@ -161,7 +161,7 @@ pub struct Tag<T: Send + Sync> {
     pub data_type: String,
     pub slug: Option<String>,
     pub name: Option<String>,
-    pub parent_id: Option<Uuid>,
+    pub dimension_value_id: Option<Uuid>,
     pub tag: T,
     pub tag_type: String,
     #[serde(
