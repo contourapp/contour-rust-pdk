@@ -188,7 +188,6 @@ impl<T> TagInput<T> {
             name,
             source_key,
             data_type,
-            parent_id,
             tag,
             tag_type,
         }
