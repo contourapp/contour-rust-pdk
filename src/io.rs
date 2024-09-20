@@ -17,6 +17,7 @@ pub enum Effective {
     Date(NaiveDate),
     DateTime(DateTime<Utc>),
     DateTimeRange(DateTimeRange),
+    DateTimeMultiRange(Vec<DateTimeRange>),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
