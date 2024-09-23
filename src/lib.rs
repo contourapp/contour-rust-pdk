@@ -33,6 +33,8 @@ extern "ExtismHost" {
     fn update_resource_host(input: String) -> String;
     fn update_tag_host(input: String) -> String;
     fn update_entry_host(input: String) -> String;
+    fn delete_entry_host(input: String) -> String;
+    fn delete_resource_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
 }
 
@@ -54,6 +56,8 @@ pub mod host_fns {
         pub fn update_resource_host(input: String) -> Result<String>;
         pub fn update_tag_host(input: String) -> Result<String>;
         pub fn update_entry_host(input: String) -> Result<String>;
+        pub fn delete_entry_host(input: String) -> Result<String>;
+        pub fn delete_resource_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
     }
 }
@@ -142,6 +146,16 @@ pub fn update_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { update_entry_host(serde_json::to_string(&input)?)? };
     let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
     Ok(output)
+}
+
+pub fn delete_entry(input: String) -> Result<()> {
+    unsafe { delete_entry_host(input)? };
+    Ok(())
+}
+
+pub fn delete_resource(input: String) -> Result<()> {
+    unsafe { delete_resource_host(input)? };
+    Ok(())
 }
 
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
