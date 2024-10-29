@@ -4,7 +4,7 @@ use std::{
 };
 
 use anyhow::Result;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset, Utc};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize, Serializer};
 use uuid::Uuid;
@@ -53,7 +53,7 @@ pub enum EntryStatus {
 pub struct Entry<E: Send + Sync> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
-    pub effective_at: DateTime<Utc>,
+    pub effective_at: DateTime<FixedOffset>,
     pub status: EntryStatus,
     pub entry: Option<E>,
     pub entry_type: String,

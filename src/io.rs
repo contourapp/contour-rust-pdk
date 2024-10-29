@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use anyhow::Result;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, FixedOffset, NaiveDate, Utc};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -16,6 +16,7 @@ pub struct DateTimeRange {
 pub enum Effective {
     Date(NaiveDate),
     DateTime(DateTime<Utc>),
+    DateTimeFixed(DateTime<FixedOffset>),
     DateTimeRange(DateTimeRange),
     DateTimeMultiRange(Vec<DateTimeRange>),
 }
