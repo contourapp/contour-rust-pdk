@@ -84,7 +84,6 @@ pub struct Line {
     pub credit: Decimal,
     pub ratio: Decimal,
     pub description: Option<String>,
-    pub consumes_line_id: Option<Uuid>,
     pub entry_id: Option<Uuid>,
     pub resource_id: Uuid,
     #[serde(

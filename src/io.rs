@@ -55,7 +55,6 @@ impl<E> EntryInput<E> {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct LineInput {
     pub line_type: LineTypeInput,
-    pub consumes_line_id: Option<Uuid>,
     pub resource_id: Uuid,
     pub debit: Decimal,
     pub credit: Decimal,
@@ -68,7 +67,6 @@ pub struct LineInput {
 impl LineInput {
     pub fn new(
         line_type: LineTypeInput,
-        consumes_line_id: Option<Uuid>,
         resource_id: Uuid,
         debit: Decimal,
         credit: Decimal,
@@ -78,7 +76,6 @@ impl LineInput {
     ) -> Self {
         Self {
             line_type,
-            consumes_line_id,
             resource_id,
             debit,
             credit,
