@@ -21,14 +21,6 @@ pub enum Effective {
     DateTimeMultiRange(Vec<DateTimeRange>),
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub enum LineTypeInput {
-    Receivable,
-    Asset,
-    Liability,
-    Equity,
-}
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct EntryInput<E> {
     pub effective: Effective,
@@ -54,7 +46,6 @@ impl<E> EntryInput<E> {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct LineInput {
-    pub line_type: LineTypeInput,
     pub resource_id: Uuid,
     pub debit: Decimal,
     pub credit: Decimal,
@@ -66,7 +57,6 @@ pub struct LineInput {
 #[allow(clippy::too_many_arguments)]
 impl LineInput {
     pub fn new(
-        line_type: LineTypeInput,
         resource_id: Uuid,
         debit: Decimal,
         credit: Decimal,
@@ -75,7 +65,6 @@ impl LineInput {
         tags: Vec<Uuid>,
     ) -> Self {
         Self {
-            line_type,
             resource_id,
             debit,
             credit,
