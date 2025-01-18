@@ -1,45 +1,9 @@
-use std::{
-    collections::{BTreeMap, HashMap},
-    ops::Range,
-};
+use std::collections::HashMap;
 
-use anyhow::Result;
 use chrono::{DateTime, FixedOffset, Utc};
 use rust_decimal::Decimal;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
-#[derive(Debug, Clone)]
-pub struct PgRange<T> {
-    start: std::collections::Bound<T>,
-    end: std::collections::Bound<T>,
-}
-
-pub type Envs = BTreeMap<String, String>;
-
-fn serialize_range<S, T>(range: &Option<PgRange<T>>, serializer: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-    T: Serialize,
-{
-    if let Some(PgRange { start, end }) = range {
-        Range { start, end }.serialize(serializer)
-    } else {
-        None::<Range<u128>>.serialize(serializer)
-    }
-}
-
-fn deserialize_range<'de, D, T>(deserializer: D) -> Result<Option<PgRange<T>>, D::Error>
-where
-    D: serde::Deserializer<'de>,
-    T: Deserialize<'de>,
-{
-    let range = Option::<Range<T>>::deserialize(deserializer)?;
-    Ok(range.map(|Range { start, end }| PgRange {
-        start: std::collections::Bound::Included(start),
-        end: std::collections::Bound::Excluded(end),
-    }))
-}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum EntryStatus {
@@ -59,17 +23,10 @@ pub struct Entry<E: Send + Sync> {
     pub entry_type: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Copy, Eq, PartialEq)]
 pub enum LineType {
-    Receivable,
     Asset,
     Liability,
     Equity,
@@ -86,12 +43,6 @@ pub struct Line {
     pub description: Option<String>,
     pub entry_id: Option<Uuid>,
     pub resource_id: Uuid,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -101,12 +52,6 @@ pub struct Instance {
     pub slug: String,
     pub name: Option<String>,
     pub plugin_id: Uuid,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -119,12 +64,6 @@ pub struct Resource<Res: Send + Sync> {
     pub instance_id: Option<Uuid>,
     pub resource: Option<Res>,
     pub resource_type: String,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -160,26 +99,6 @@ pub struct Tag<T: Send + Sync> {
     pub data_type: String,
     pub slug: Option<String>,
     pub name: Option<String>,
-    pub dimension_value_id: Option<Uuid>,
     pub tag: T,
     pub tag_type: String,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
-}
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct LineTag {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub line_id: Uuid,
-    pub tag_id: Uuid,
-    #[serde(
-        serialize_with = "serialize_range",
-        deserialize_with = "deserialize_range",
-        flatten
-    )]
-    pub sys_period: Option<PgRange<DateTime<Utc>>>,
 }

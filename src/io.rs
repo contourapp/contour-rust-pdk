@@ -219,11 +219,15 @@ impl QueryLastEntry {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct QueryResource {
     pub source_key: String,
+    pub resource_type: String,
 }
 
 impl QueryResource {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
+    pub fn new(source_key: String, resource_type: String) -> Self {
+        Self {
+            source_key,
+            resource_type,
+        }
     }
 }
 
