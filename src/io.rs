@@ -212,37 +212,37 @@ pub struct QueryResource {
 }
 
 impl QueryResource {
-    pub fn new(source_key: String, resource_type: String) -> Self {
+    pub fn new(resource_type: String, source_key: String) -> Self {
         Self {
-            source_key,
             resource_type,
+            source_key,
         }
     }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTagByDataType {
-    pub data_type: String,
+pub struct QueryTagByTagType {
+    pub tag_type: String,
     pub source_key: String,
 }
 
-impl QueryTagByDataType {
-    pub fn new(data_type: String, source_key: String) -> Self {
+impl QueryTagByTagType {
+    pub fn new(tag_type: String, source_key: String) -> Self {
         Self {
-            data_type,
+            tag_type,
             source_key,
         }
     }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTagsByDataType {
-    pub data_type: String,
+pub struct QueryTagsByTagType {
+    pub tag_type: String,
 }
 
-impl QueryTagsByDataType {
-    pub fn new(data_type: String) -> Self {
-        Self { data_type }
+impl QueryTagsByTagType {
+    pub fn new(tag_type: String) -> Self {
+        Self { tag_type }
     }
 }
 
