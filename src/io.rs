@@ -140,44 +140,45 @@ impl<B> RequestBuilder<B> {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ResourceInput<R> {
     pub name: Option<String>,
-    pub unit: String,
-    pub source_key: String,
-    pub resource: R,
     pub resource_type: String,
+    pub source_key: String,
+    pub unit: String,
+    pub resource: Option<R>,
 }
 
 impl<R> ResourceInput<R> {
-    pub fn new(name: Option<String>, unit: String, source_key: String, resource: R) -> Self {
-        let resource_type = get_type(&resource);
+    pub fn new(
+        name: Option<String>,
+        resource_type: String,
+        source_key: String,
+        unit: String,
+        resource: Option<R>,
+    ) -> Self {
         Self {
             name,
-            unit,
-            source_key,
-            resource,
             resource_type,
+            source_key,
+            unit,
+            resource,
         }
     }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TagInput<T> {
-    pub name: Option<String>,
-    pub source_key: String,
-    pub data_type: String,
-    pub tag: T,
     pub tag_type: String,
+    pub source_key: String,
+    pub name: Option<String>,
+    pub tag: Option<T>,
 }
 
 impl<T> TagInput<T> {
-    pub fn new(name: Option<String>, source_key: String, data_type: String, tag: T) -> Self {
-        let tag_type = get_type(&tag);
-
+    pub fn new(tag_type: String, source_key: String, name: Option<String>, tag: Option<T>) -> Self {
         Self {
-            name,
-            source_key,
-            data_type,
-            tag,
             tag_type,
+            source_key,
+            name,
+            tag,
         }
     }
 }
@@ -289,7 +290,8 @@ mod tests {
             Some("test".to_string()),
             "test".to_string(),
             "test".to_string(),
-            test_struct,
+            "test".to_string(),
+            Some(test_struct),
         );
 
         assert_eq!(get_type(&input_resource), "TestStruct");
