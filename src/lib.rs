@@ -9,7 +9,7 @@ pub mod models;
 // pub use contour_interface::{command, io, models};
 pub use contour_macros::listener_fn;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 pub use extism_pdk::{self, FnResult};
 use graphql_client::{GraphQLQuery, Response};
 pub use rust_decimal;
@@ -92,16 +92,16 @@ pub fn query_resource<R: DeserializeOwned + Send + Sync>(
     input: io::QueryResource,
 ) -> Result<Option<models::Resource<R>>> {
     let result = unsafe { query_resource_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str::<Option<models::Resource<R>>>(&result)
+        .map_err(|_| anyhow!("Failed to parse resource: {}", &result))
 }
 
 pub fn query_tag_by_tag_type<T: DeserializeOwned + Send + Sync>(
     input: io::QueryTagByTagType,
 ) -> Result<Option<models::Tag<T>>> {
     let result = unsafe { query_tag_by_tag_type_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str::<Option<models::Tag<T>>>(&result)
+        .map_err(|_| anyhow!("Failed to parse tag: {}", &result))
 }
 
 pub fn query_tags_by_tag_type<T: DeserializeOwned + Send + Sync>(
@@ -162,6 +162,5 @@ pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
     input: io::RequestInput<B>,
 ) -> Result<R> {
     let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str::<R>(&result).map_err(|_| anyhow!("Failed to parse response: {}", &result))
 }

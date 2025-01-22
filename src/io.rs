@@ -173,15 +173,23 @@ pub struct TagInput<T> {
     pub source_key: String,
     pub name: Option<String>,
     pub tag: Option<T>,
+    pub data_type: Option<String>,
 }
 
 impl<T> TagInput<T> {
-    pub fn new(tag_type: String, source_key: String, name: Option<String>, tag: Option<T>) -> Self {
+    pub fn new(
+        tag_type: String,
+        source_key: String,
+        name: Option<String>,
+        tag: Option<T>,
+        data_type: Option<String>,
+    ) -> Self {
         Self {
             tag_type,
             source_key,
             name,
             tag,
+            data_type,
         }
     }
 }

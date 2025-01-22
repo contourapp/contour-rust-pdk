@@ -14,7 +14,7 @@ pub enum EntryStatus {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Entry<E: Send + Sync> {
+pub struct Entry<E> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub effective_at: DateTime<FixedOffset>,
@@ -55,15 +55,16 @@ pub struct Instance {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Resource<Res: Send + Sync> {
+pub struct Resource<R> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub name: Option<String>,
     pub unit: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
-    pub resource: Option<Res>,
+    pub resource: Option<R>,
     pub resource_type: String,
+    pub data_type: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -93,10 +94,10 @@ pub struct Request<B, M, Re> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Tag<T: Send + Sync> {
+pub struct Tag<T> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
-    pub data_type: String,
+    pub data_type: Option<String>,
     pub slug: Option<String>,
     pub name: Option<String>,
     pub tag: T,
