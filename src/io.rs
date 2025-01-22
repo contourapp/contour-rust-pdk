@@ -144,6 +144,7 @@ pub struct ResourceInput<R> {
     pub source_key: String,
     pub unit: String,
     pub resource: Option<R>,
+    pub data_type: Option<String>,
 }
 
 impl<R> ResourceInput<R> {
@@ -153,6 +154,7 @@ impl<R> ResourceInput<R> {
         source_key: String,
         unit: String,
         resource: Option<R>,
+        data_type: Option<String>,
     ) -> Self {
         Self {
             name,
@@ -160,6 +162,7 @@ impl<R> ResourceInput<R> {
             source_key,
             unit,
             resource,
+            data_type,
         }
     }
 }
@@ -292,6 +295,7 @@ mod tests {
             "test".to_string(),
             "test".to_string(),
             Some(test_struct),
+            Some("TestStruct".to_string()),
         );
 
         assert_eq!(get_type(&input_resource), "TestStruct");
