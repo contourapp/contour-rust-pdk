@@ -68,24 +68,21 @@ use host_fns::*;
 pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::ResponseData>> {
     let json = Q::build_query(variables);
     let result = unsafe { query_host(serde_json::to_string(&json)?)? };
-    let output: Response<Q::ResponseData> = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse query: {}", &result))
 }
 
 pub fn query_entry<E: DeserializeOwned + Send + Sync>(
     input: io::QueryEntry,
 ) -> Result<Option<models::Entry<E>>> {
     let result = unsafe { query_entry_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse entry: {}", &result))
 }
 
 pub fn query_last_entry<E: DeserializeOwned + Send + Sync>(
     input: io::QueryLastEntry,
 ) -> Result<Option<models::Entry<E>>> {
     let result = unsafe { query_last_entry_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse entry: {}", &result))
 }
 
 pub fn query_resource<R: DeserializeOwned + Send + Sync>(
@@ -108,44 +105,37 @@ pub fn query_tags_by_tag_type<T: DeserializeOwned + Send + Sync>(
     input: io::QueryTagsByTagType,
 ) -> Result<Vec<models::Tag<T>>> {
     let result = unsafe { query_tags_by_tag_type_host(serde_json::to_string(&input)?)? };
-    let output = serde_json::from_str(&result)?;
-    Ok(output)
+    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse tags: {}", &result))
 }
 
 pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { upsert_resource_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn upsert_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
     let result = unsafe { upsert_tag_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn upsert_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn update_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { update_resource_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn update_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
     let result = unsafe { update_tag_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn update_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { update_entry_host(serde_json::to_string(&input)?)? };
-    let output = Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))?;
-    Ok(output)
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
 pub fn delete_entry(input: String) -> Result<()> {
