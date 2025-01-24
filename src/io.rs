@@ -52,6 +52,7 @@ pub struct LineInput {
     pub ratio: Decimal,
     pub description: Option<String>,
     pub tags: Vec<Uuid>,
+    pub parent_line_id: Option<Uuid>,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -71,6 +72,7 @@ impl LineInput {
             ratio,
             description,
             tags,
+            parent_line_id: None,
         }
     }
 }
