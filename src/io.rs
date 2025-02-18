@@ -1,24 +1,116 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Debug, str::FromStr};
 
 use anyhow::Result;
-use chrono::{DateTime, FixedOffset, NaiveDate, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
+use chrono_tz::Tz;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DateTimeRange {
-    pub from: DateTime<Utc>,
-    pub until: DateTime<Utc>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Effective {
     Date(NaiveDate),
     DateTime(DateTime<Utc>),
-    DateTimeFixed(DateTime<FixedOffset>),
+    DateTimeTz(DateTimeTz),
     DateTimeRange(DateTimeRange),
     DateTimeMultiRange(Vec<DateTimeRange>),
+}
+
+// Should move to Jiff at some point - https://github.com/BurntSushi/jiff/blob/HEAD/COMPARE.md
+#[derive(Debug, Clone, PartialEq)]
+pub struct DateTimeTz(pub DateTime<Tz>);
+
+impl Serialize for DateTimeTz {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&format!("{}[{}]", self.0.to_rfc3339(), self.0.timezone()))
+    }
+}
+
+impl<'de> Deserialize<'de> for DateTimeTz {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let mut split = s.split('[');
+        let d = split.next().ok_or(serde::de::Error::custom(
+            "Could not get datetime from DateTimeTz",
+        ))?;
+        let datetime = DateTime::parse_from_rfc3339(d).map_err(serde::de::Error::custom)?;
+        let tz = Tz::from_str(
+            &split
+                .next()
+                .ok_or(serde::de::Error::custom("Could not get tz from DateTimeTz"))?
+                .replace(']', ""),
+        )
+        .map_err(serde::de::Error::custom)?;
+        Ok(DateTimeTz(datetime.with_timezone(&tz)))
+    }
+}
+
+impl FromStr for DateTimeTz {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut split = s.split('[');
+        let d = split
+            .next()
+            .ok_or(anyhow::anyhow!("Could not get datetime from DateTimeTz"))?;
+        let datetime = DateTime::parse_from_rfc3339(d).map_err(|e| anyhow::anyhow!(e))?;
+        let tz = Tz::from_str(
+            &split
+                .next()
+                .ok_or(anyhow::anyhow!("Could not get tz from DateTimeTz"))?
+                .replace(']', ""),
+        )?;
+        Ok(DateTimeTz(datetime.with_timezone(&tz)))
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct DateTimeRange {
+    pub from: DateTimeTz,
+    pub until: DateTimeTz,
+}
+
+impl DateTimeRange {
+    pub fn new(from: DateTimeTz, until: DateTimeTz) -> Self {
+        Self { from, until }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum ResourceSelector {
+    Id(Uuid),
+    SourceKey {
+        resource_type: String,
+        source_key: String,
+    },
+    SelectOrCreate {
+        resource_type: String,
+        source_key: String,
+        name: Option<String>,
+        unit: String,
+        data_type: Option<String>,
+    },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum TagSelector {
+    Id(Uuid),
+    SourceKey {
+        tag_type: String,
+        source_key: String,
+    },
+    SelectOrCreate {
+        tag_type: String,
+        source_key: String,
+        name: Option<String>,
+        data_type: Option<String>,
+    },
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -46,27 +138,27 @@ impl<E> EntryInput<E> {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct LineInput {
-    pub resource_id: Uuid,
+    pub resource: ResourceSelector,
     pub debit: Decimal,
     pub credit: Decimal,
     pub ratio: Decimal,
     pub description: Option<String>,
-    pub tags: Vec<Uuid>,
+    pub tags: Vec<TagSelector>,
     pub parent_line_id: Option<Uuid>,
 }
 
 #[allow(clippy::too_many_arguments)]
 impl LineInput {
     pub fn new(
-        resource_id: Uuid,
+        resource: ResourceSelector,
         debit: Decimal,
         credit: Decimal,
         ratio: Decimal,
         description: Option<String>,
-        tags: Vec<Uuid>,
+        tags: Vec<TagSelector>,
     ) -> Self {
         Self {
-            resource_id,
+            resource,
             debit,
             credit,
             ratio,
@@ -193,70 +285,6 @@ impl<T> TagInput<T> {
             tag,
             data_type,
         }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryEntry {
-    pub source_key: String,
-}
-
-impl QueryEntry {
-    pub fn new(source_key: String) -> Self {
-        Self { source_key }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryLastEntry {
-    pub entry_type: String,
-    pub before: DateTime<Utc>,
-}
-
-impl QueryLastEntry {
-    pub fn new(entry_type: String, before: DateTime<Utc>) -> Self {
-        Self { entry_type, before }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryResource {
-    pub source_key: String,
-    pub resource_type: String,
-}
-
-impl QueryResource {
-    pub fn new(resource_type: String, source_key: String) -> Self {
-        Self {
-            resource_type,
-            source_key,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTagByTagType {
-    pub tag_type: String,
-    pub source_key: String,
-}
-
-impl QueryTagByTagType {
-    pub fn new(tag_type: String, source_key: String) -> Self {
-        Self {
-            tag_type,
-            source_key,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct QueryTagsByTagType {
-    pub tag_type: String,
-}
-
-impl QueryTagsByTagType {
-    pub fn new(tag_type: String) -> Self {
-        Self { tag_type }
     }
 }
 

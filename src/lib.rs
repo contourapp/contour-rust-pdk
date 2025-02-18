@@ -22,11 +22,6 @@ use uuid::Uuid;
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
     fn query_host(input: String) -> String;
-    fn query_entry_host(input: String) -> String;
-    fn query_last_entry_host(input: String) -> String;
-    fn query_resource_host(input: String) -> String;
-    fn query_tag_by_tag_type_host(input: String) -> String;
-    fn query_tags_by_tag_type_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
     fn upsert_entry_host(input: String) -> String;
@@ -45,11 +40,6 @@ pub mod host_fns {
 
     extern "C" {
         pub fn query_host(input: String) -> Result<String>;
-        pub fn query_entry_host(input: String) -> Result<String>;
-        pub fn query_last_entry_host(input: String) -> Result<String>;
-        pub fn query_resource_host(input: String) -> Result<String>;
-        pub fn query_tag_by_tag_type_host(input: String) -> Result<String>;
-        pub fn query_tags_by_tag_type_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn upsert_entry_host(input: String) -> Result<String>;
@@ -69,43 +59,6 @@ pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::Res
     let json = Q::build_query(variables);
     let result = unsafe { query_host(serde_json::to_string(&json)?)? };
     serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse query: {}", &result))
-}
-
-pub fn query_entry<E: DeserializeOwned + Send + Sync>(
-    input: io::QueryEntry,
-) -> Result<Option<models::Entry<E>>> {
-    let result = unsafe { query_entry_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse entry: {}", &result))
-}
-
-pub fn query_last_entry<E: DeserializeOwned + Send + Sync>(
-    input: io::QueryLastEntry,
-) -> Result<Option<models::Entry<E>>> {
-    let result = unsafe { query_last_entry_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse entry: {}", &result))
-}
-
-pub fn query_resource<R: DeserializeOwned + Send + Sync>(
-    input: io::QueryResource,
-) -> Result<Option<models::Resource<R>>> {
-    let result = unsafe { query_resource_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str::<Option<models::Resource<R>>>(&result)
-        .map_err(|_| anyhow!("Failed to parse resource: {}", &result))
-}
-
-pub fn query_tag_by_tag_type<T: DeserializeOwned + Send + Sync>(
-    input: io::QueryTagByTagType,
-) -> Result<Option<models::Tag<T>>> {
-    let result = unsafe { query_tag_by_tag_type_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str::<Option<models::Tag<T>>>(&result)
-        .map_err(|_| anyhow!("Failed to parse tag: {}", &result))
-}
-
-pub fn query_tags_by_tag_type<T: DeserializeOwned + Send + Sync>(
-    input: io::QueryTagsByTagType,
-) -> Result<Vec<models::Tag<T>>> {
-    let result = unsafe { query_tags_by_tag_type_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse tags: {}", &result))
 }
 
 pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
@@ -133,7 +86,7 @@ pub fn update_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
-pub fn update_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
+pub fn update_entry<E: Serialize, T>(input: io::EntryInput<E>) -> Result<Uuid> {
     let result = unsafe { update_entry_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
