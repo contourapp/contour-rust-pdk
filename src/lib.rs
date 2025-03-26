@@ -12,6 +12,7 @@ pub use contour_macros::listener_fn;
 use anyhow::{anyhow, Result};
 pub use extism_pdk::{self, FnResult};
 use graphql_client::{GraphQLQuery, Response};
+use io::TimezoneInput;
 pub use rust_decimal;
 pub use rust_decimal_macros::dec;
 use serde::{de::DeserializeOwned, Serialize};
@@ -31,6 +32,7 @@ extern "ExtismHost" {
     fn delete_entry_host(input: String) -> String;
     fn delete_resource_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
+    fn find_timezone_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -49,6 +51,7 @@ pub mod host_fns {
         pub fn delete_entry_host(input: String) -> Result<String>;
         pub fn delete_resource_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
+        pub fn find_timezone_host(input: String) -> Result<String>;
     }
 }
 
@@ -106,4 +109,9 @@ pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
 ) -> Result<R> {
     let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
     serde_json::from_str::<R>(&result).map_err(|_| anyhow!("Failed to parse response: {}", &result))
+}
+
+pub fn find_timezone(input: TimezoneInput) -> Result<String> {
+    let result = unsafe { find_timezone_host(serde_json::to_string(&input)?)? };
+    Ok(result)
 }

@@ -303,6 +303,12 @@ pub struct HandlerInput<C> {
     pub command: C,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TimezoneInput {
+    pub lat: f64,
+    pub lon: f64,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
