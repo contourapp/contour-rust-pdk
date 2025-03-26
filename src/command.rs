@@ -18,8 +18,9 @@ pub enum Command<V> {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Cron<C> {
-    pub from: Option<DateTime<Utc>>,
+    pub from: DateTime<Utc>,
     pub until: DateTime<Utc>,
+    pub first: bool,
     #[serde(skip)]
     pub command: PhantomData<C>,
 }
