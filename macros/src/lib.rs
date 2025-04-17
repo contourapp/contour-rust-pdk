@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use quote::quote;
 use syn::{parse_macro_input, ItemFn};
 
@@ -55,72 +54,16 @@ pub fn listener_fn(
             }
         }
     };
-    let command_type = get_type_string(input_ty);
 
     quote! {
-        #[no_mangle]
-        pub #constness #unsafety extern "C" fn #name() -> i32 {            
-            #constness #unsafety fn inner #generics(#input_name: #input_ty) #output #block
-            let contour_rust_pdk::extism_pdk::Json(json): contour_rust_pdk::extism_pdk::Json<serde_json::Value> = contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::input());
-            let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = contour_rust_pdk::extism_pdk::unwrap!(serde_json::from_value(json));
+        use contour_rust_pdk::extism_pdk;
 
-            let output = if input.command_type == #command_type {
-                match inner(input.command) {
-                    Ok(x) => x,
-                    Err(rc) => {
-                        let err = format!("{:?}", rc.0);
-                        let mut mem = contour_rust_pdk::extism_pdk::Memory::from_bytes(&err).unwrap();
-                        unsafe {
-                            contour_rust_pdk::extism_pdk::extism::error_set(mem.offset());
-                        }
-
-                        return rc.1;
-                    }
-                };
-            };
-
-            contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::output(&output));
-            0
-        }
+        #[extism_pdk::plugin_fn]
+        pub fn #name(extism_pdk::Json(json): extism_pdk::Json<serde_json::Value>) -> extism_pdk::FnResult<()> {        
+            #constness #unsafety fn listener #generics(#input_name: #input_ty) #output #block
+            let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json)?;
+            listener(input.command)
+        } 
     }
     .into()
-}
-
-fn get_type_string(ty: &syn::Type) -> String {
-    match ty {
-        syn::Type::Path(p) => {
-            let mut segments = p.path.segments.iter().peekable();
-            let mut path = String::new();
-
-            while let Some(segment) = segments.next() {
-                let ident = &segment.ident;
-                path = format!("{}{}", path, ident);
-
-                if segments.next().is_none() {
-                    if let syn::PathArguments::AngleBracketed(ref args) = segment.arguments {
-                        let arg_paths = args
-                            .args
-                            .iter()
-                            .map(|arg| match arg {
-                                syn::GenericArgument::Type(ty) => get_type_string(ty),
-                                _ => panic!("listener_fn expects a type parameter, not {:?}", arg),
-                            })
-                            .join(", ");
-                        path = format!("{}<{}>", path, arg_paths);
-                    }
-                } else {
-                    path = format!("{}::", path);
-                }
-            }
-
-            path
-        }
-        syn::Type::Tuple(t) => {
-            if !t.elems.is_empty() {
-                panic!("listener_fn expects a path or none, not a tuple");
-            }
-            "()".to_string()
-        }
-        _ => panic!("listener_fn expects a path parameter, not {:?}", ty),
-    }
 }

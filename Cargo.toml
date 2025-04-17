@@ -16,7 +16,7 @@ chrono = { version = "0.4.31", features = [
 ], default-features = false }
 chrono-tz = { version = "0.10.0", features = ["serde"] }
 csv-core = "0.1.12"
-extism-pdk = "1.0.0-rc1"
+extism-pdk = "1.4.0"
 rust_decimal = { version = "1.33.1" }
 rust_decimal_macros = { version = "1.33.1" }
 serde = "1.0.193"
