@@ -56,14 +56,20 @@ pub fn listener_fn(
     };
 
     quote! {
-        use contour_rust_pdk::extism_pdk;
+        mod #name {
+            use contour_rust_pdk::extism_pdk;
+            use super::*;
 
-        #[extism_pdk::plugin_fn]
-        pub fn #name(extism_pdk::Json(json): extism_pdk::Json<serde_json::Value>) -> extism_pdk::FnResult<()> {        
-            #constness #unsafety fn listener #generics(#input_name: #input_ty) #output #block
-            let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json)?;
-            listener(input.command)
-        } 
+            #[extism_pdk::plugin_fn]
+            pub fn #name(extism_pdk::Json(json): extism_pdk::Json<serde_json::Value>) -> extism_pdk::FnResult<()> {        
+                #constness #unsafety fn listener #generics(#input_name: #input_ty) #output #block
+                let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json)?;
+                listener(input.command)
+            } 
+        }
+
+        #[allow(unused_imports)]
+        use #name::#name;
     }
     .into()
 }
