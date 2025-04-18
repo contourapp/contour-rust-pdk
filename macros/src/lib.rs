@@ -20,6 +20,16 @@ pub fn listener_fn(
     let output = &mut function.sig.output;
     let block = &function.block;
 
+    if name == "main" {
+        panic!(
+            "listener_fn must not be applied to a `main` function. To fix, rename this to something other than `main`."
+        );
+    }
+
+    if !generics.params.is_empty() {
+        panic!("listener_fn expects a function with no generics");
+    }
+
     let (input_name, input_ty) = if inputs.len() != 1 {
         panic!("listener_fn expects a function that accepts one parameter");
     } else {
@@ -31,12 +41,6 @@ pub fn listener_fn(
             _ => panic!("listener_fn expects a function that accepts one parameter"),
         }
     };
-
-    if name == "main" {
-        panic!(
-            "listener_fn must not be applied to a `main` function. To fix, rename this to something other than `main`."
-        )
-    }
 
     match output {
         syn::ReturnType::Default => {
@@ -56,20 +60,30 @@ pub fn listener_fn(
     };
 
     quote! {
-        mod #name {
-            use contour_rust_pdk::extism_pdk;
-            use super::*;
+        #[no_mangle]
+        pub #constness #unsafety extern "C" fn #name() -> i32 {
+            #constness #unsafety fn inner #generics(#input_name: #input_ty) #output {
+                #block
+            }
 
-            #[extism_pdk::plugin_fn]
-            pub fn #name(extism_pdk::Json(json): extism_pdk::Json<serde_json::Value>) -> extism_pdk::FnResult<()> {        
-                #constness #unsafety fn listener #generics(#input_name: #input_ty) #output #block
-                let input: contour_rust_pdk::io::HandlerInput::<#input_ty> = serde_json::from_value(json)?;
-                listener(input.command)
-            } 
+            let contour_rust_pdk::extism_pdk::Json(input): contour_rust_pdk::extism_pdk::Json<
+                contour_rust_pdk::io::HandlerInput::<#input_ty>
+            > = contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::input());
+
+            let output = match inner(input.command) {
+                Ok(x) => x,
+                Err(rc) => {
+                    let err = format!("{:?}", rc.0);
+                    let mut mem = contour_rust_pdk::extism_pdk::Memory::from_bytes(&err).unwrap();
+                    unsafe {
+                        contour_rust_pdk::extism_pdk::extism::error_set(mem.offset());
+                    }
+                    return rc.1;
+                }
+            };
+            contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::output(&output));
+            0
         }
-
-        #[allow(unused_imports)]
-        use #name::#name;
     }
     .into()
 }
