@@ -309,6 +309,20 @@ pub struct TimezoneInput {
     pub lon: f64,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RecordInput<R> {
+    pub source_key: String,
+    pub record_type: String,
+    pub record: R,
+    pub effective: Effective,
+}
+
+impl<R> RecordInput<R> {
+    pub fn new(source_key: String, record_type: String, record: R, effective: Effective) -> Self {
+        Self { source_key, record_type, record, effective }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
