@@ -30,6 +30,7 @@ extern "ExtismHost" {
     fn delete_resource_host(input: String) -> String;
     fn make_request_host(input: String) -> String;
     fn find_timezone_host(input: String) -> String;
+    fn upsert_record_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -46,6 +47,7 @@ pub mod host_fns {
         pub fn delete_resource_host(input: String) -> Result<String>;
         pub fn make_request_host(input: String) -> Result<String>;
         pub fn find_timezone_host(input: String) -> Result<String>;
+        pub fn upsert_record_host(input: String) -> Result<String>;
     }
 }
 
@@ -93,4 +95,9 @@ pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
 pub fn find_timezone(input: TimezoneInput) -> Result<String> {
     let result = unsafe { find_timezone_host(serde_json::to_string(&input)?)? };
     Ok(result)
+}
+
+pub fn upsert_record<R: Serialize>(input: io::RecordInput<R>) -> Result<Uuid> {
+    let result = unsafe { upsert_record_host(serde_json::to_string(&input)?)? };
+    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
