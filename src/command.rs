@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -7,7 +5,7 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum Command<V> {
-    Cron(Cron<V>),
+    Cron(Cron),
     Manual(Manual<V>),
     Email(Email),
     Scraper(Scraper<V>),
@@ -17,12 +15,10 @@ pub enum Command<V> {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Cron<C> {
+pub struct Cron {
     pub from: DateTime<Utc>,
     pub until: DateTime<Utc>,
     pub first: bool,
-    #[serde(skip)]
-    pub command: PhantomData<C>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
