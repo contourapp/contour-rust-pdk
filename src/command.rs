@@ -6,12 +6,9 @@ use uuid::Uuid;
 #[serde(untagged)]
 pub enum Command<V> {
     Cron(Cron),
-    Manual(Manual<V>),
     Email(Email),
     Scraper(Scraper<V>),
-    Inserted(Inserted<V>),
-    Updated(Updated<V>),
-    Deleted(Deleted),
+    Manual(Manual<V>),
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
