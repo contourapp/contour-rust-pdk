@@ -81,6 +81,7 @@ pub fn listener_fn(
                     return rc.1;
                 }
             };
+
             contour_rust_pdk::extism_pdk::unwrap!(contour_rust_pdk::extism_pdk::output(&output));
             0
         }
