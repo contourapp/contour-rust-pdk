@@ -115,6 +115,7 @@ pub enum RecordStatus {
 pub struct Record<R> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
     pub record: R,
     pub record_type: String,
     pub source_key: Option<String>,
