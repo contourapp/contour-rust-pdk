@@ -103,3 +103,24 @@ pub struct Tag<T> {
     pub tag: T,
     pub tag_type: String,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub enum RecordStatus {
+    Created,
+    Updated,
+    Deleted,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Record<R> {
+    pub id: Uuid,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub record: R,
+    pub record_type: String,
+    pub source_key: Option<String>,
+    pub instance_id: Option<Uuid>,
+    pub status: RecordStatus,
+    pub effective_at: DateTime<FixedOffset>,
+    pub effective_timezone: String,
+}
