@@ -309,6 +309,21 @@ pub struct TimezoneInput {
     pub lon: f64,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RecordInput<R> {
+    pub source_key: String,
+    pub record_type: String,
+    pub record: R,
+    pub valid_from: DateTime<Utc>,
+    pub valid_until: Option<DateTime<Utc>>,
+}
+
+impl<R> RecordInput<R> {
+    pub fn new(source_key: String, record_type: String, record: R, valid_from: DateTime<Utc>, valid_until: Option<DateTime<Utc>>) -> Self {
+        Self { source_key, record_type, record, valid_from, valid_until }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
