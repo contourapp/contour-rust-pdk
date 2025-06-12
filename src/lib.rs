@@ -33,6 +33,7 @@ extern "ExtismHost" {
     fn upsert_record_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
     fn enqueue_transformation_host(input: String) -> String;
+    fn get_record_by_id_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
