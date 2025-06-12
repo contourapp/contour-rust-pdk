@@ -32,6 +32,7 @@ extern "ExtismHost" {
     fn find_timezone_host(input: String) -> String;
     fn upsert_record_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
+    fn enqueue_transformation_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -50,11 +51,15 @@ pub mod host_fns {
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_record_host(input: String) -> Result<String>;
         pub fn delete_record_host(input: String) -> Result<String>;
+        pub fn enqueue_transformation_host(input: String) -> Result<String>;
+        pub fn get_record_by_id_host(input: String) -> Result<String>;
     }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
 use host_fns::*;
+
+use crate::io::RecordInput;
 
 pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::ResponseData>> {
     let json = Q::build_query(variables);
@@ -107,4 +112,15 @@ pub fn upsert_record<R: Serialize>(input: io::RecordInput<R>) -> Result<Uuid> {
 pub fn delete_record(input: String) -> Result<()> {
     unsafe { delete_record_host(input)? };
     Ok(())
+}
+
+pub fn enqueue_transformation(input: io::TransformationInput) -> Result<()> {
+    unsafe { enqueue_transformation_host(serde_json::to_string(&input)?)? };
+    Ok(())
+}
+
+pub fn get_record_by_id<T: DeserializeOwned>(input: Uuid) -> Result<RecordInput<T>> {
+    let result = unsafe { get_record_by_id_host(input.to_string())? };
+    let record = serde_json::from_str::<RecordInput<T>>(&result)?;
+    Ok(record)
 }

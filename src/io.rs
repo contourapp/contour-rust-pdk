@@ -319,8 +319,35 @@ pub struct RecordInput<R> {
 }
 
 impl<R> RecordInput<R> {
-    pub fn new(source_key: String, record_type: String, record: R, valid_from: DateTime<Utc>, valid_until: Option<DateTime<Utc>>) -> Self {
-        Self { source_key, record_type, record, valid_from, valid_until }
+    pub fn new(
+        source_key: String,
+        record_type: String,
+        record: R,
+        valid_from: DateTime<Utc>,
+        valid_until: Option<DateTime<Utc>>,
+    ) -> Self {
+        Self {
+            source_key,
+            record_type,
+            record,
+            valid_from,
+            valid_until,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TransformationInput {
+    pub record_ids: Vec<Uuid>,
+    pub listener_slug: String,
+}
+
+impl TransformationInput {
+    pub fn new(record_ids: Vec<Uuid>, listener_slug: &str) -> Self {
+        Self {
+            record_ids,
+            listener_slug: listener_slug.to_string(),
+        }
     }
 }
 
