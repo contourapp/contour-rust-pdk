@@ -22,13 +22,14 @@ use uuid::Uuid;
 #[cfg(target_arch = "wasm32")]
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
+    fn make_request_host(input: String) -> String;
+    fn config_host(input: String) -> String;
     fn query_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
     fn upsert_entry_host(input: String) -> String;
     fn delete_entry_host(input: String) -> String;
     fn delete_resource_host(input: String) -> String;
-    fn make_request_host(input: String) -> String;
     fn find_timezone_host(input: String) -> String;
     fn upsert_record_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
@@ -42,13 +43,14 @@ pub mod host_fns {
     use anyhow::Result;
 
     extern "C" {
+        pub fn make_request_host(input: String) -> Result<String>;
+        pub fn config_host(input: String) -> Result<String>;
         pub fn query_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn upsert_entry_host(input: String) -> Result<String>;
         pub fn delete_entry_host(input: String) -> Result<String>;
         pub fn delete_resource_host(input: String) -> Result<String>;
-        pub fn make_request_host(input: String) -> Result<String>;
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_record_host(input: String) -> Result<String>;
         pub fn delete_record_host(input: String) -> Result<String>;
@@ -66,6 +68,10 @@ pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::Res
     let json = Q::build_query(variables);
     let result = unsafe { query_host(serde_json::to_string(&json)?)? };
     serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse query: {}", &result))
+}
+
+pub fn config(input: &str) -> Result<String> {
+    unsafe { config_host(input.to_string()) }
 }
 
 pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {

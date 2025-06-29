@@ -92,7 +92,7 @@ impl Csv {
     /// Determines if the current row should be processed based on filtering criteria
     #[inline]
     fn should_process_row(row_idx: usize, starting_row: usize, rows: Option<usize>) -> bool {
-        row_idx >= starting_row && rows.map_or(true, |r| row_idx < starting_row + r)
+        row_idx >= starting_row && rows.is_none_or(|r| row_idx < starting_row + r)
     }
 
     /// Determines if processing should stop based on row constraints
