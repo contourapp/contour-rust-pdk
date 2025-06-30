@@ -33,6 +33,7 @@ extern "ExtismHost" {
     fn find_timezone_host(input: String) -> String;
     fn upsert_record_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
+    fn upsert_measurement_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -52,6 +53,7 @@ pub mod host_fns {
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_record_host(input: String) -> Result<String>;
         pub fn delete_record_host(input: String) -> Result<String>;
+        pub fn upsert_measurement_host(input: String) -> Result<String>;
     }
 }
 
