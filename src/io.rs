@@ -351,6 +351,18 @@ impl TransformationInput {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ChangeSet<T> {
+    pub upserts: Vec<UpsertRecord<T>>,
+    pub deletes: Vec<Uuid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct UpsertRecord<T> {
+    pub id: Uuid,
+    pub object: T,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
