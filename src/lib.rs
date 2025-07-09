@@ -35,6 +35,7 @@ extern "ExtismHost" {
     fn delete_record_host(input: String) -> String;
     fn enqueue_transformation_host(input: String) -> String;
     fn get_record_by_id_host(input: String) -> String;
+    fn upsert_measurement_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -56,6 +57,7 @@ pub mod host_fns {
         pub fn delete_record_host(input: String) -> Result<String>;
         pub fn enqueue_transformation_host(input: String) -> Result<String>;
         pub fn get_record_by_id_host(input: String) -> Result<String>;
+        pub fn upsert_measurement_host(input: String) -> Result<String>;
     }
 }
 
