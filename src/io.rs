@@ -336,21 +336,6 @@ impl<R> RecordInput<R> {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct TransformationInput {
-    pub record_ids: Vec<Uuid>,
-    pub listener_slug: String,
-}
-
-impl TransformationInput {
-    pub fn new(record_ids: Vec<Uuid>, listener_slug: &str) -> Self {
-        Self {
-            record_ids,
-            listener_slug: listener_slug.to_string(),
-        }
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ChangeSet<T> {
     pub upserts: Vec<UpsertRecord<T>>,

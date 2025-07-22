@@ -33,7 +33,6 @@ extern "ExtismHost" {
     fn find_timezone_host(input: String) -> String;
     fn upsert_record_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
-    fn enqueue_transformation_host(input: String) -> String;
     fn get_record_by_id_host(input: String) -> String;
     fn upsert_measurement_host(input: String) -> String;
 }
@@ -55,7 +54,6 @@ pub mod host_fns {
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_record_host(input: String) -> Result<String>;
         pub fn delete_record_host(input: String) -> Result<String>;
-        pub fn enqueue_transformation_host(input: String) -> Result<String>;
         pub fn get_record_by_id_host(input: String) -> Result<String>;
         pub fn upsert_measurement_host(input: String) -> Result<String>;
     }
@@ -122,12 +120,6 @@ pub fn delete_record(input: String) -> Result<()> {
     unsafe { delete_record_host(input)? };
     Ok(())
 }
-
-pub fn enqueue_transformation(input: io::TransformationInput) -> Result<()> {
-    unsafe { enqueue_transformation_host(serde_json::to_string(&input)?)? };
-    Ok(())
-}
-
 pub fn get_record_by_id<T: DeserializeOwned>(input: Uuid) -> Result<RecordInput<T>> {
     let result = unsafe { get_record_by_id_host(input.to_string())? };
     let record = serde_json::from_str::<RecordInput<T>>(&result)?;
