@@ -7,6 +7,8 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::models::{Record, RecordAction};
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Effective {
     Date(NaiveDate),
@@ -336,16 +338,10 @@ impl<R> RecordInput<R> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct ChangeSet<T> {
-    pub upserts: Vec<UpsertRecord<T>>,
-    pub deletes: Vec<Uuid>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct UpsertRecord<T> {
-    pub id: Uuid,
-    pub object: T,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TransformInput<T> {
+    pub record: Record<T>,
+    pub action: RecordAction,
 }
 
 #[cfg(test)]
