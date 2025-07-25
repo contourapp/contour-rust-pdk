@@ -107,7 +107,7 @@ pub struct Tag<T> {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RecordAction {
-    Create,
+    Insert,
     Update,
     Delete,
 }
