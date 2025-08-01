@@ -7,6 +7,8 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::models::{Record, RecordAction};
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Effective {
     Date(NaiveDate),
@@ -319,9 +321,27 @@ pub struct RecordInput<R> {
 }
 
 impl<R> RecordInput<R> {
-    pub fn new(source_key: String, record_type: String, record: R, valid_from: DateTime<Utc>, valid_until: Option<DateTime<Utc>>) -> Self {
-        Self { source_key, record_type, record, valid_from, valid_until }
+    pub fn new(
+        source_key: String,
+        record_type: String,
+        record: R,
+        valid_from: DateTime<Utc>,
+        valid_until: Option<DateTime<Utc>>,
+    ) -> Self {
+        Self {
+            source_key,
+            record_type,
+            record,
+            valid_from,
+            valid_until,
+        }
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TransformInput<T> {
+    pub record: Record<T>,
+    pub action: RecordAction,
 }
 
 #[cfg(test)]
