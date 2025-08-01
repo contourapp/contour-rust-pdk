@@ -1,5 +1,5 @@
-use contour_macros::listener_fn;
 use contour_rust_pdk::command::Scraper;
+use contour_rust_pdk_macros::listener_fn;
 use extism_pdk::FnResult;
 use serde::Deserialize;
 
@@ -13,5 +13,5 @@ fn test_listener_fn_macro() {
         Ok(())
     }
 
-    assert_eq!(test_fn(), 0);
+    assert_eq!(unsafe { test_fn() }, 0);
 }

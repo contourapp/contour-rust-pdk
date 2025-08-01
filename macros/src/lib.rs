@@ -1,5 +1,5 @@
 use quote::quote;
-use syn::{parse_macro_input, ItemFn};
+use syn::{ItemFn, parse_macro_input};
 
 #[proc_macro_attribute]
 pub fn listener_fn(
@@ -13,8 +13,6 @@ pub fn listener_fn(
     }
 
     let name = &function.sig.ident;
-    let constness = &function.sig.constness;
-    let unsafety = &function.sig.unsafety;
     let generics = &function.sig.generics;
     let inputs = &mut function.sig.inputs;
     let output = &mut function.sig.output;
@@ -60,9 +58,9 @@ pub fn listener_fn(
     };
 
     quote! {
-        #[no_mangle]
-        pub #constness #unsafety extern "C" fn #name() -> i32 {
-            #constness #unsafety fn inner #generics(#input_name: #input_ty) #output {
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn #name() -> i32 {
+            fn inner #generics(#input_name: #input_ty) #output {
                 #block
             }
 

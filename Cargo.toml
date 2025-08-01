@@ -1,7 +1,7 @@
 [package]
 name = "contour_rust_pdk"
 version = "0.0.1"
-edition = "2021"
+edition = "2024"
 
 [workspace]
 members = ["macros"]
@@ -9,7 +9,7 @@ members = ["macros"]
 [dependencies]
 anyhow = "1.0.75"
 graphql_client = "0.14.0"
-contour_macros = { path = "./macros" }
+contour_rust_pdk_macros = { path = "./macros" }
 chrono = { version = "0.4.31", features = [
     "serde",
     "alloc",

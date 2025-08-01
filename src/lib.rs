@@ -7,15 +7,15 @@ pub mod io;
 pub mod models;
 
 // pub use contour_interface::{command, io, models};
-pub use contour_macros::listener_fn;
+pub use contour_rust_pdk_macros::listener_fn;
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 pub use extism_pdk::{self, FnResult};
 use graphql_client::{GraphQLQuery, Response};
 use io::TimezoneInput;
 pub use rust_decimal;
 pub use rust_decimal_macros::dec;
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 use std::str::FromStr;
 use uuid::Uuid;
 
@@ -41,7 +41,7 @@ extern "ExtismHost" {
 pub mod host_fns {
     use anyhow::Result;
 
-    extern "C" {
+    unsafe extern "C" {
         pub fn make_request_host(input: String) -> Result<String>;
         pub fn config_host(input: String) -> Result<String>;
         pub fn query_host(input: String) -> Result<String>;
