@@ -32,7 +32,7 @@ extern "ExtismHost" {
     fn delete_entry_host(input: String) -> String;
     fn delete_resource_host(input: String) -> String;
     fn find_timezone_host(input: String) -> String;
-    fn upsert_record_host(input: String) -> String;
+    fn upsert_records_host(input: String) -> String;
     fn delete_record_host(input: String) -> String;
     fn upsert_measurement_host(input: String) -> String;
 }
@@ -53,7 +53,7 @@ pub mod host_fns {
         pub fn delete_entry_host(input: String) -> Result<String>;
         pub fn delete_resource_host(input: String) -> Result<String>;
         pub fn find_timezone_host(input: String) -> Result<String>;
-        pub fn upsert_record_host(input: String) -> Result<String>;
+        pub fn upsert_records_host(input: String) -> Result<String>;
         pub fn delete_record_host(input: String) -> Result<String>;
         pub fn upsert_measurement_host(input: String) -> Result<String>;
     }
@@ -114,9 +114,14 @@ pub fn find_timezone(input: TimezoneInput) -> Result<String> {
     Ok(result)
 }
 
-pub fn upsert_record<R: Serialize>(input: io::RecordInput<R>) -> Result<Uuid> {
-    let result = unsafe { upsert_record_host(serde_json::to_string(&input)?)? };
-    Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
+pub fn upsert_records<R: Serialize + DeserializeOwned>(
+    input: io::RecordsInput<R>,
+) -> Result<Vec<Uuid>> {
+    let result = unsafe { upsert_records_host(serde_json::to_string(&input)?)? };
+    serde_json::from_str::<Vec<String>>(&result)?
+        .iter()
+        .map(|id| Uuid::from_str(id.as_str()).map_err(|_| anyhow!("Invalid UUID")))
+        .collect()
 }
 
 pub fn delete_record(input: String) -> Result<()> {

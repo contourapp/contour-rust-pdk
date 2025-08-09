@@ -338,6 +338,21 @@ impl<R> RecordInput<R> {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RecordsInput<R> {
+    pub records: Vec<RecordInput<R>>,
+    pub plugin_controlled_history: bool,
+}
+
+impl<R> RecordsInput<R> {
+    pub fn new(records: Vec<RecordInput<R>>, plugin_controlled_history: bool) -> Self {
+        Self {
+            records,
+            plugin_controlled_history,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TransformInput<T> {
     pub record: Record<T>,
