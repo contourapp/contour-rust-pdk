@@ -5,6 +5,7 @@ use chrono::{DateTime, NaiveDate, Utc};
 use chrono_tz::Tz;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use uuid::Uuid;
 
 use crate::models::{Record, RecordAction};
@@ -339,9 +340,12 @@ impl<R> RecordInput<R> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformInput<T> {
-    pub record: Record<T>,
+pub struct TransformInput<T, RecordType = Value> {
+    // Data provided by the schema query
+    pub context: T,
     pub action: RecordAction,
+    pub data: Option<Record<RecordType>>,
+    pub data_old: Option<Record<RecordType>>,
 }
 
 #[cfg(test)]
