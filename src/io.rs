@@ -355,9 +355,8 @@ impl<R> RecordsInput<R> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformInput<T, RecordType = Value> {
-    // Data provided by the schema query
-    pub context: T,
+pub struct TransformInput<RecordType, JoinData = Value> {
+    pub join_data: JoinData,
     pub action: RecordAction,
     pub record: Record<RecordType>,
 }
