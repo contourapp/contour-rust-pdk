@@ -359,8 +359,7 @@ pub struct TransformInput<T, RecordType = Value> {
     // Data provided by the schema query
     pub context: T,
     pub action: RecordAction,
-    pub data: Option<Record<RecordType>>,
-    pub data_old: Option<Record<RecordType>>,
+    pub record: Record<RecordType>,
 }
 
 #[cfg(test)]
