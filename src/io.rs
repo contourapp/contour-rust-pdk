@@ -356,9 +356,14 @@ impl<R> RecordsInput<R> {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TransformInput<RecordType, JoinData = Value> {
-    pub join_data: JoinData,
     pub action: RecordAction,
+    pub record: RecordWithJoinData<RecordType, JoinData>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordWithJoinData<RecordType = Value, JoinData = Value> {
     pub record: Record<RecordType>,
+    pub joins: Option<JoinData>,
 }
 
 #[cfg(test)]
