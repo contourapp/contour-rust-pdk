@@ -353,12 +353,6 @@ impl<R> RecordsInput<R> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformInput<T> {
-    pub record: Record<T>,
-    pub action: RecordAction,
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
