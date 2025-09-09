@@ -353,18 +353,6 @@ impl<R> RecordsInput<R> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformInput<T> {
-    pub record: TransformRecordWrapper<T>,
-    pub action: RecordAction,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformRecordWrapper<T> {
-    pub record: Record<T>,
-    pub joins: Option<serde_json::Value>,
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
