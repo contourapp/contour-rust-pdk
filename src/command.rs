@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
@@ -44,19 +43,26 @@ pub struct Scraper<C> {
     pub items: Vec<C>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Inserted<R> {
-    pub id: Uuid,
-    pub record: R,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Transform<T, J = serde_json::Value> {
+    pub records: Vec<TransformRecord<T, J>>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Updated<R> {
-    pub id: Uuid,
-    pub record: R,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Deleted {
-    pub id: Uuid,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TransformRecord<T, J = serde_json::Value> {
+    // Record metadata fields
+    pub id: String,
+    pub created_at: String,
+    pub updated_at: String,
+    pub valid_from: String,
+    pub valid_until: Option<String>,
+    pub org_id: String,
+    pub record_type: String,
+    pub instance_id: Option<String>,
+    pub source_key: Option<String>,
+    pub job_id: Option<String>,
+    // Nested record data
+    pub record: T,
+    // Join data nested within each record
+    pub joins: Option<J>,
 }
