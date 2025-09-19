@@ -7,8 +7,6 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::models::{Record, RecordAction};
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Effective {
     Date(NaiveDate),
