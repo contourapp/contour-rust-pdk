@@ -1,6 +1,7 @@
+use std::collections::HashMap;
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
@@ -44,19 +45,19 @@ pub struct Scraper<C> {
     pub items: Vec<C>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Inserted<R> {
-    pub id: Uuid,
-    pub record: R,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Transform<T, J = serde_json::Value> {
+    pub records: Vec<TransformRecord<T, J>>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Updated<R> {
-    pub id: Uuid,
-    pub record: R,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Deleted {
-    pub id: Uuid,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TransformRecord<T, J = serde_json::Value> {
+    pub valid_from: String,
+    pub valid_until: Option<String>,
+    pub record_type: String,
+    pub source_key: Option<String>,
+    // Nested record data
+    pub record: T,
+    // Join data nested within each record
+    pub joins: HashMap<String, Option<Vec<Box<TransformRecord<J>>>>>,
 }

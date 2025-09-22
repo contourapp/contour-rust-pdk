@@ -126,27 +126,3 @@ pub struct Record<R> {
     pub source_key: Option<String>,
     pub job_id: Option<Uuid>,
 }
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformInput<T, J = serde_json::Value> {
-    pub records: Vec<TransformRecord<T, J>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformRecord<T, J = serde_json::Value> {
-    // Record metadata fields
-    pub id: String,
-    pub created_at: String,
-    pub updated_at: String,
-    pub valid_from: String,
-    pub valid_until: Option<String>,
-    pub org_id: String,
-    pub record_type: String,
-    pub instance_id: Option<String>,
-    pub source_key: Option<String>,
-    pub job_id: Option<String>,
-    // Nested record data
-    pub record: T,
-    // Join data nested within each record
-    pub joins: Option<J>,
-}
