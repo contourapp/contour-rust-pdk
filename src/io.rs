@@ -7,6 +7,10 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 563ad3e (Updated transform types)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Effective {
     Date(NaiveDate),
