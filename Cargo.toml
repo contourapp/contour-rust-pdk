@@ -8,7 +8,6 @@ members = ["macros"]
 
 [dependencies]
 anyhow = "1.0.75"
-graphql_client = "0.14.0"
 contour_rust_pdk_macros = { path = "./macros" }
 chrono = { version = "0.4.31", features = [
     "serde",

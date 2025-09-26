@@ -170,28 +170,36 @@ impl LineInput {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum RequestMethod {
+    Get,
+    Post,
+    Patch,
+    Put,
+    Delete,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct RequestInput<B> {
     pub domain: String,
     pub endpoint: String,
-    pub method: String,
+    pub method: RequestMethod,
     pub parameters: Vec<(String, String)>,
     pub headers: HashMap<String, String>,
     pub body: Option<B>,
-    pub response_type: String,
 }
 
 pub struct RequestBuilder<B> {
     domain: String,
     endpoint: String,
-    method: String,
+    method: RequestMethod,
     parameters: Vec<(String, String)>,
     headers: HashMap<String, String>,
     body: Option<B>,
-    response_type: String,
 }
 
 impl<B> RequestBuilder<B> {
-    pub fn new(domain: String, path: String, method: String, response_type: String) -> Self {
+    pub fn new(domain: String, path: String, method: RequestMethod) -> Self {
         Self {
             domain,
             endpoint: path,
@@ -199,7 +207,6 @@ impl<B> RequestBuilder<B> {
             parameters: Vec::new(),
             headers: HashMap::default(),
             body: None,
-            response_type,
         }
     }
 
@@ -226,7 +233,6 @@ impl<B> RequestBuilder<B> {
             parameters: self.parameters,
             body: self.body,
             headers: self.headers,
-            response_type: self.response_type,
         }
     }
 }
