@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -46,18 +44,18 @@ pub struct Scraper<C> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Transform<T, J = serde_json::Value> {
+pub struct Transform<T, J> {
     pub records: Vec<TransformRecord<T, J>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformRecord<T, J = serde_json::Value> {
+pub struct TransformRecord<T, J> {
+    pub source_key: String,
+    pub record_type: String,
     pub valid_from: String,
     pub valid_until: Option<String>,
-    pub record_type: String,
-    pub source_key: Option<String>,
     // Nested record data
     pub record: T,
     // Join data nested within each record
-    pub joins: HashMap<String, Option<Vec<Box<TransformRecord<J>>>>>,
+    pub joins: J,
 }
