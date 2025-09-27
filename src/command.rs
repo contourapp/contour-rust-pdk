@@ -59,3 +59,6 @@ pub struct TransformRecord<T, J> {
     // Join data nested within each record
     pub joins: J,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmptyJoins {}

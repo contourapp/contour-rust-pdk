@@ -11,6 +11,7 @@ pub use contour_rust_pdk_macros::listener_fn;
 
 use anyhow::{Result, anyhow};
 pub use extism_pdk::{self, FnResult};
+use graphql_client::{GraphQLQuery, Response};
 use io::TimezoneInput;
 pub use rust_decimal;
 pub use rust_decimal_macros::dec;
@@ -22,6 +23,7 @@ use uuid::Uuid;
 #[extism_pdk::host_fn]
 extern "ExtismHost" {
     fn make_request_host(input: String) -> String;
+    fn query_host(input: String) -> String;
     fn config_host(input: String) -> String;
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
@@ -39,6 +41,7 @@ pub mod host_fns {
 
     unsafe extern "C" {
         pub fn make_request_host(input: String) -> Result<String>;
+        pub fn query_host(input: String) -> Result<String>;
         pub fn config_host(input: String) -> Result<String>;
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
@@ -52,6 +55,12 @@ pub mod host_fns {
 
 #[cfg(not(target_arch = "wasm32"))]
 use host_fns::*;
+
+pub fn query<Q: GraphQLQuery>(variables: Q::Variables) -> Result<Response<Q::ResponseData>> {
+    let json = Q::build_query(variables);
+    let result = unsafe { query_host(serde_json::to_string(&json)?)? };
+    serde_json::from_str(&result).map_err(|_| anyhow!("Failed to parse query: {}", &result))
+}
 
 pub fn config(input: &str) -> Result<String> {
     unsafe { config_host(input.to_string()) }
