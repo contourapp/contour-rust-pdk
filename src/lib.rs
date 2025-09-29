@@ -31,6 +31,7 @@ extern "ExtismHost" {
     fn upsert_entries_host(input: String) -> String;
     fn find_timezone_host(input: String) -> String;
     fn upsert_records_host(input: String) -> String;
+    fn upsert_record_history_host(input: String) -> String;
     fn upsert_measurement_host(input: String) -> String;
 }
 
@@ -49,6 +50,7 @@ pub mod host_fns {
         pub fn upsert_entries_host(input: String) -> Result<String>;
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_records_host(input: String) -> Result<String>;
+        pub fn upsert_record_history_host(input: String) -> Result<String>;
         pub fn upsert_measurement_host(input: String) -> Result<String>;
     }
 }
@@ -94,6 +96,13 @@ pub fn upsert_records<R: Serialize + DeserializeOwned>(
         .iter()
         .map(|id| Uuid::from_str(id.as_str()).map_err(|_| anyhow!("Invalid UUID")))
         .collect()
+}
+
+pub fn insert_record_history<R: Serialize + DeserializeOwned>(
+    input: io::RecordHistoryInput<R>,
+) -> Result<()> {
+    unsafe { upsert_record_history_host(serde_json::to_string(&input)?)? };
+    Ok(())
 }
 
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(

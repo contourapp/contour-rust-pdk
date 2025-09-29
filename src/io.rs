@@ -357,6 +357,34 @@ impl<R> RecordsInput<R> {
     }
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RecordHistoryInput<R> {
+    pub source_key: String,
+    pub record: R,
+    pub record_type: String,
+
+    pub sys_period_start: DateTime<Utc>,
+    pub sys_period_end: Option<DateTime<Utc>>,
+}
+
+impl<R> RecordHistoryInput<R> {
+    pub fn new(
+        source_key: String,
+        record_type: String,
+        record: R,
+        sys_period_start: DateTime<Utc>,
+        sys_period_end: Option<DateTime<Utc>>,
+    ) -> Self {
+        Self {
+            source_key,
+            record_type,
+            record,
+            sys_period_start,
+            sys_period_end,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
