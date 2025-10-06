@@ -360,6 +360,17 @@ impl<R> RecordsInput<R> {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DeleteRecordsInput {
+    pub deleted_records: Vec<String>,
+}
+
+impl DeleteRecordsInput {
+    pub fn new(deleted_records: Vec<String>) -> Self {
+        Self { deleted_records }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RecordHistoryInput<R> {
     pub source_key: String,
