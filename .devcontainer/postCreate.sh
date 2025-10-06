@@ -1,4 +1,4 @@
-rustup target add wasm32-unknown-unknown
+rustup target add wasm32-wasip1
 rustup toolchain add nightly-x86_64-unknown-linux-gnu
 rustup component add rustfmt
 rustup component add clippy

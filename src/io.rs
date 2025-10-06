@@ -3,6 +3,7 @@ use std::{collections::HashMap, fmt::Debug, str::FromStr};
 use anyhow::Result;
 use chrono::{DateTime, NaiveDate, Utc};
 use chrono_tz::Tz;
+use extism_pdk::{Json, ToBytes};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -111,6 +112,15 @@ pub enum TagSelector {
         name: Option<String>,
         data_type: Option<String>,
     },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToBytes)]
+#[encoding(Json)]
+pub enum Change<I> {
+    EntryInput(EntryInput<I>),
+    TagInput(TagInput<I>),
+    ResourceInput(ResourceInput<I>),
+    None,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

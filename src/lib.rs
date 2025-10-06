@@ -6,8 +6,7 @@ pub mod csv;
 pub mod io;
 pub mod models;
 
-// pub use contour_interface::{command, io, models};
-pub use contour_rust_pdk_macros::listener_fn;
+pub use contour_rust_pdk_macros::{extract_fn, transform_fn};
 
 use anyhow::{Result, anyhow};
 pub use extism_pdk::{self, FnResult};
