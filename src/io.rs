@@ -346,20 +346,16 @@ impl<R> RecordInput<R> {
 pub struct RecordsInput<R> {
     pub records: Vec<RecordInput<R>>,
     pub plugin_controlled_history: bool,
-    #[serde(default)]
-    pub deleted_records: Vec<String>, // List of source keys for records marked as deleted by the 3rd party integration/plugin.
 }
 
 impl<R> RecordsInput<R> {
     pub fn new(
         records: Vec<RecordInput<R>>,
         plugin_controlled_history: bool,
-        deleted_records: Vec<String>,
     ) -> Self {
         Self {
             records,
             plugin_controlled_history,
-            deleted_records,
         }
     }
 }

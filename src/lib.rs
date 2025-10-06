@@ -33,6 +33,7 @@ extern "ExtismHost" {
     fn upsert_records_host(input: String) -> String;
     fn upsert_record_history_host(input: String) -> String;
     fn upsert_measurement_host(input: String) -> String;
+    fn delete_records_host(input: String) -> String;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -52,6 +53,7 @@ pub mod host_fns {
         pub fn upsert_records_host(input: String) -> Result<String>;
         pub fn upsert_record_history_host(input: String) -> Result<String>;
         pub fn upsert_measurement_host(input: String) -> Result<String>;
+        pub fn delete_records_host(input: String) -> Result<String>;
     }
 }
 
@@ -96,6 +98,11 @@ pub fn upsert_records<R: Serialize + DeserializeOwned>(
         .iter()
         .map(|id| Uuid::from_str(id.as_str()).map_err(|_| anyhow!("Invalid UUID")))
         .collect()
+}
+
+pub fn delete_records(input: Vec<String>) -> Result<()> {
+    unsafe { delete_records_host(serde_json::to_string(&input)?)? };
+    Ok(())
 }
 
 pub fn insert_record_history<R: Serialize + DeserializeOwned>(
