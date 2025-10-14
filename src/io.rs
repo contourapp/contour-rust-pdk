@@ -364,22 +364,21 @@ impl<R> RecordsInput<R> {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct DeletedRecordInfo {
+pub struct DeletedRecordInput {
     pub source_key: String,
-    /// Optional deletion timestamp from the plugin/3rd party system.
-    /// If provided, this timestamp will be used to close the sys_period.
-    /// If not provided, NOW() will be used as fallback.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted_at: Option<DateTime<Utc>>,
+    /// Deletion timestamp from the plugin/3rd party system.
+    /// This timestamp will be used to close the sys_period.
+    /// The plugin should provide Utc::now() if the 3rd party system doesn't provide a timestamp.
+    pub deleted_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DeleteRecordsInput {
-    pub deleted_records: Vec<DeletedRecordInfo>,
+    pub deleted_records: Vec<DeletedRecordInput>,
 }
 
 impl DeleteRecordsInput {
-    pub fn new(deleted_records: Vec<DeletedRecordInfo>) -> Self {
+    pub fn new(deleted_records: Vec<DeletedRecordInput>) -> Self {
         Self { deleted_records }
     }
 }

@@ -100,7 +100,7 @@ pub fn upsert_records<R: Serialize + DeserializeOwned>(
         .collect()
 }
 
-pub fn delete_records(deleted_records: Vec<io::DeletedRecordInfo>) -> Result<()> {
+pub fn delete_records(deleted_records: Vec<io::DeletedRecordInput>) -> Result<()> {
     let input = io::DeleteRecordsInput::new(deleted_records);
     unsafe { delete_records_host(serde_json::to_string(&input)?)? };
     Ok(())
