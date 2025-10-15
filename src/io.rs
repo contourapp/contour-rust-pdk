@@ -320,7 +320,10 @@ pub struct RecordInput<R> {
     pub source_key: String,
     pub record_type: String,
     pub record: R,
-    pub valid_from: DateTime<Utc>,
+    /// Optional start date for temporal tracking.
+    /// Use None for timeless records (reference data like catalogs, tags).
+    /// Use Some(timestamp) for date-specific records (transactions, events).
+    pub valid_from: Option<DateTime<Utc>>,
     pub valid_until: Option<DateTime<Utc>>,
 }
 
@@ -329,7 +332,7 @@ impl<R> RecordInput<R> {
         source_key: String,
         record_type: String,
         record: R,
-        valid_from: DateTime<Utc>,
+        valid_from: Option<DateTime<Utc>>,
         valid_until: Option<DateTime<Utc>>,
     ) -> Self {
         Self {
@@ -361,12 +364,21 @@ impl<R> RecordsInput<R> {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct DeletedRecordInput {
+    pub source_key: String,
+    /// Deletion timestamp from the plugin/3rd party system.
+    /// This timestamp will be used to close the sys_period.
+    /// The plugin should provide Utc::now() if the 3rd party system doesn't provide a timestamp.
+    pub deleted_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DeleteRecordsInput {
-    pub deleted_records: Vec<String>,
+    pub deleted_records: Vec<DeletedRecordInput>,
 }
 
 impl DeleteRecordsInput {
-    pub fn new(deleted_records: Vec<String>) -> Self {
+    pub fn new(deleted_records: Vec<DeletedRecordInput>) -> Self {
         Self { deleted_records }
     }
 }
