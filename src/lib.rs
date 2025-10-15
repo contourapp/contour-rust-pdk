@@ -91,7 +91,7 @@ pub fn upsert_entries<E: Serialize>(entries: Vec<io::EntryInput<E>>) -> Result<(
 }
 
 pub fn upsert_records<R: Serialize + DeserializeOwned>(
-    input: io::RecordsInput<R>,
+    input: io::RecordHistoriesInput<R>,
 ) -> Result<Vec<Uuid>> {
     let result = unsafe { upsert_records_host(serde_json::to_string(&input)?)? };
     serde_json::from_str::<Vec<String>>(&result)?
