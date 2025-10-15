@@ -52,7 +52,7 @@ pub struct Transform<T, J> {
 pub struct TransformRecord<T, J> {
     pub source_key: String,
     pub record_type: String,
-    pub valid_from: String,
+    pub valid_from: Option<String>,
     pub valid_until: Option<String>,
     // Nested record data
     pub record: T,

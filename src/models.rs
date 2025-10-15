@@ -117,7 +117,7 @@ pub struct Record<R> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-    pub valid_from: DateTime<Utc>,
+    pub valid_from: Option<DateTime<Utc>>,
     pub valid_until: Option<DateTime<Utc>>,
     pub org_id: Uuid,
     pub record: R,
