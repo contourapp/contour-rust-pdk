@@ -359,7 +359,7 @@ pub struct RecordHistoryInput<R> {
     pub record: R,
     pub record_type: String,
 
-    pub sys_period_start: DateTime<Utc>,
+    pub sys_period_start: Option<DateTime<Utc>>,
     pub sys_period_end: Option<DateTime<Utc>>,
 }
 
@@ -368,7 +368,7 @@ impl<R> RecordHistoryInput<R> {
         source_key: String,
         record_type: String,
         record: R,
-        sys_period_start: DateTime<Utc>,
+        sys_period_start: Option<DateTime<Utc>>,
         sys_period_end: Option<DateTime<Utc>>,
     ) -> Self {
         Self {

@@ -112,17 +112,17 @@ pub enum RecordAction {
     Delete,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Record<R> {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub valid_from: Option<DateTime<Utc>>,
-    pub valid_until: Option<DateTime<Utc>>,
-    pub org_id: Uuid,
-    pub record: R,
-    pub record_type: Option<String>,
-    pub instance_id: Option<Uuid>,
-    pub source_key: Option<String>,
-    pub job_id: Option<Uuid>,
-}
+// #[derive(Debug, Clone, Deserialize, Serialize)]
+// pub struct RecordHistoryInput<R> {
+//     pub id: Uuid,
+//     pub created_at: DateTime<Utc>,
+//     pub updated_at: DateTime<Utc>,
+//     pub sys_period_start: Option<DateTime<Utc>>,
+//     pub sys_period_end: Option<DateTime<Utc>>,
+//     pub org_id: Uuid,
+//     pub record: R,
+//     pub record_type: Option<String>,
+//     pub instance_id: Option<Uuid>,
+//     pub source_key: Option<String>,
+//     pub job_id: Option<Uuid>,
+// }
