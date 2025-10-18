@@ -316,44 +316,14 @@ pub struct TimezoneInput {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct RecordInput<R> {
-    pub source_key: String,
-    pub record_type: String,
-    pub record: R,
-    /// Optional start date for temporal tracking.
-    /// Use None for timeless records (reference data like catalogs, tags).
-    /// Use Some(timestamp) for date-specific records (transactions, events).
-    pub valid_from: Option<DateTime<Utc>>,
-    pub valid_until: Option<DateTime<Utc>>,
-}
-
-impl<R> RecordInput<R> {
-    pub fn new(
-        source_key: String,
-        record_type: String,
-        record: R,
-        valid_from: Option<DateTime<Utc>>,
-        valid_until: Option<DateTime<Utc>>,
-    ) -> Self {
-        Self {
-            source_key,
-            record_type,
-            record,
-            valid_from,
-            valid_until,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RecordsInput<R> {
-    pub records: Vec<RecordInput<R>>,
+pub struct RecordHistoriesInput<R> {
+    pub records: Vec<RecordHistoryInput<R>>,
     pub plugin_controlled_history: bool,
 }
 
-impl<R> RecordsInput<R> {
+impl<R> RecordHistoriesInput<R> {
     pub fn new(
-        records: Vec<RecordInput<R>>,
+        records: Vec<RecordHistoryInput<R>>,
         plugin_controlled_history: bool,
     ) -> Self {
         Self {
@@ -389,7 +359,7 @@ pub struct RecordHistoryInput<R> {
     pub record: R,
     pub record_type: String,
 
-    pub sys_period_start: DateTime<Utc>,
+    pub sys_period_start: Option<DateTime<Utc>>,
     pub sys_period_end: Option<DateTime<Utc>>,
 }
 
@@ -398,7 +368,7 @@ impl<R> RecordHistoryInput<R> {
         source_key: String,
         record_type: String,
         record: R,
-        sys_period_start: DateTime<Utc>,
+        sys_period_start: Option<DateTime<Utc>>,
         sys_period_end: Option<DateTime<Utc>>,
     ) -> Self {
         Self {

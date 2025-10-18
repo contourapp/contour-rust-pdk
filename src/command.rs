@@ -52,8 +52,8 @@ pub struct Transform<T, J> {
 pub struct TransformRecord<T, J> {
     pub source_key: String,
     pub record_type: String,
-    pub valid_from: Option<String>,
-    pub valid_until: Option<String>,
+    pub sys_period_start: Option<String>,
+    pub sys_period_end: Option<String>,
     // Nested record data
     pub record: T,
     // Join data nested within each record
