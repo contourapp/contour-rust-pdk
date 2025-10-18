@@ -303,18 +303,6 @@ pub fn get_type<T>(val: &T) -> String {
         .to_string()
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct HandlerInput<C> {
-    pub command_type: String,
-    pub command: C,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct TimezoneInput {
-    pub lat: f64,
-    pub lon: f64,
-}
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RecordHistoriesInput<R> {
     pub records: Vec<RecordHistoryInput<R>>,
@@ -322,10 +310,7 @@ pub struct RecordHistoriesInput<R> {
 }
 
 impl<R> RecordHistoriesInput<R> {
-    pub fn new(
-        records: Vec<RecordHistoryInput<R>>,
-        plugin_controlled_history: bool,
-    ) -> Self {
+    pub fn new(records: Vec<RecordHistoryInput<R>>, plugin_controlled_history: bool) -> Self {
         Self {
             records,
             plugin_controlled_history,
@@ -358,9 +343,11 @@ pub struct RecordHistoryInput<R> {
     pub source_key: String,
     pub record: R,
     pub record_type: String,
-
     pub sys_period_start: Option<DateTime<Utc>>,
     pub sys_period_end: Option<DateTime<Utc>>,
+    // Defaults to false
+    #[serde(default)]
+    pub valid_range: bool,
 }
 
 impl<R> RecordHistoryInput<R> {
@@ -370,6 +357,7 @@ impl<R> RecordHistoryInput<R> {
         record: R,
         sys_period_start: Option<DateTime<Utc>>,
         sys_period_end: Option<DateTime<Utc>>,
+        valid_range: bool,
     ) -> Self {
         Self {
             source_key,
@@ -377,8 +365,21 @@ impl<R> RecordHistoryInput<R> {
             record,
             sys_period_start,
             sys_period_end,
+            valid_range,
         }
     }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HandlerInput<C> {
+    pub command_type: String,
+    pub command: C,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TimezoneInput {
+    pub lat: f64,
+    pub lon: f64,
 }
 
 #[cfg(test)]

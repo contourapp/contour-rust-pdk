@@ -77,7 +77,7 @@ pub enum RequestMethod {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Request<B, M, Re> {
+pub struct Request<B, M, R> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub method: RequestMethod,
@@ -87,7 +87,7 @@ pub struct Request<B, M, Re> {
     pub body: B,
     pub metadata: M,
     pub metadata_type: String,
-    pub response: Re,
+    pub response: R,
     pub response_type: String,
     pub status_code: i32,
     pub instance_id: Uuid,
@@ -112,17 +112,18 @@ pub enum RecordAction {
     Delete,
 }
 
-// #[derive(Debug, Clone, Deserialize, Serialize)]
-// pub struct RecordHistoryInput<R> {
-//     pub id: Uuid,
-//     pub created_at: DateTime<Utc>,
-//     pub updated_at: DateTime<Utc>,
-//     pub sys_period_start: Option<DateTime<Utc>>,
-//     pub sys_period_end: Option<DateTime<Utc>>,
-//     pub org_id: Uuid,
-//     pub record: R,
-//     pub record_type: Option<String>,
-//     pub instance_id: Option<Uuid>,
-//     pub source_key: Option<String>,
-//     pub job_id: Option<Uuid>,
-// }
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct RecordHistory<R, M> {
+    pub id: Uuid,
+    pub source_key: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub valid_from: DateTime<Utc>,
+    pub valid_until: Option<DateTime<Utc>>,
+    pub metadata: Option<M>,
+    pub record: R,
+    pub record_type: Option<String>,
+    pub job_id: Option<Uuid>,
+    pub instance_id: Option<Uuid>,
+    pub org_id: Uuid,
+}
