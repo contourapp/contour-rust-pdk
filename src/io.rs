@@ -304,44 +304,20 @@ pub fn get_type<T>(val: &T) -> String {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct RecordHistoriesInput<R> {
-    pub records: Vec<RecordHistoryInput<R>>,
-    pub plugin_controlled_history: bool,
-}
-
-impl<R> RecordHistoriesInput<R> {
-    pub fn new(records: Vec<RecordHistoryInput<R>>, plugin_controlled_history: bool) -> Self {
-        Self {
-            records,
-            plugin_controlled_history,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct DeletedRecordInput {
+pub struct DeletedRecordHistoryInput {
     pub source_key: String,
+    pub record_type: String,
     /// Deletion timestamp from the plugin/3rd party system.
     /// This timestamp will be used to close the sys_period.
     /// The plugin should provide Utc::now() if the 3rd party system doesn't provide a timestamp.
     pub deleted_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct DeleteRecordsInput {
-    pub deleted_records: Vec<DeletedRecordInput>,
-}
-
-impl DeleteRecordsInput {
-    pub fn new(deleted_records: Vec<DeletedRecordInput>) -> Self {
-        Self { deleted_records }
-    }
-}
-
 #[derive(Debug, Deserialize, Serialize)]
-pub struct RecordHistoryInput<R> {
+pub struct RecordHistoryInput<R, M> {
     pub source_key: String,
     pub record: R,
+    pub metadata: Option<M>,
     pub record_type: String,
     pub sys_period_start: Option<DateTime<Utc>>,
     pub sys_period_end: Option<DateTime<Utc>>,
@@ -350,11 +326,12 @@ pub struct RecordHistoryInput<R> {
     pub valid_range: bool,
 }
 
-impl<R> RecordHistoryInput<R> {
+impl<R, M> RecordHistoryInput<R, M> {
     pub fn new(
         source_key: String,
         record_type: String,
         record: R,
+        metadata: Option<M>,
         sys_period_start: Option<DateTime<Utc>>,
         sys_period_end: Option<DateTime<Utc>>,
         valid_range: bool,
@@ -363,6 +340,7 @@ impl<R> RecordHistoryInput<R> {
             source_key,
             record_type,
             record,
+            metadata,
             sys_period_start,
             sys_period_end,
             valid_range,

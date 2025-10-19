@@ -111,19 +111,3 @@ pub enum RecordAction {
     Update,
     Delete,
 }
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct RecordHistory<R, M> {
-    pub id: Uuid,
-    pub source_key: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub valid_from: DateTime<Utc>,
-    pub valid_until: Option<DateTime<Utc>>,
-    pub metadata: Option<M>,
-    pub record: R,
-    pub record_type: Option<String>,
-    pub job_id: Option<Uuid>,
-    pub instance_id: Option<Uuid>,
-    pub org_id: Uuid,
-}

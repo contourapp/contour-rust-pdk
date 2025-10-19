@@ -44,18 +44,19 @@ pub struct Scraper<C> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Transform<T, J> {
-    pub records: Vec<TransformRecord<T, J>>,
+pub struct Transform<T, J, M> {
+    pub records: Vec<TransformRecord<T, J, M>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformRecord<T, J> {
+pub struct TransformRecord<T, J, M> {
     pub source_key: String,
     pub record_type: String,
     pub sys_period_start: Option<String>,
     pub sys_period_end: Option<String>,
     // Nested record data
     pub record: T,
+    pub metadata: M,
     // Join data nested within each record
     pub joins: J,
 }
