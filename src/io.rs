@@ -114,22 +114,23 @@ pub enum TagSelector {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct EntryInput<E> {
+pub struct EntryInput {
     pub effective: Effective,
     pub source_key: String,
-    pub entry: E,
     pub entry_type: String,
     pub lines: Vec<LineInput>,
 }
 
-impl<E> EntryInput<E> {
-    pub fn new(effective: Effective, source_key: String, entry: E, lines: Vec<LineInput>) -> Self {
-        let entry_type = get_type(&entry);
-
+impl EntryInput {
+    pub fn new(
+        effective: Effective,
+        source_key: String,
+        entry_type: String,
+        lines: Vec<LineInput>,
+    ) -> Self {
         Self {
             effective,
             source_key,
-            entry,
             entry_type,
             lines,
         }

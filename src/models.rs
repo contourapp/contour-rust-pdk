@@ -14,12 +14,11 @@ pub enum EntryStatus {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Entry<E> {
+pub struct Entry {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub effective_at: DateTime<FixedOffset>,
     pub status: EntryStatus,
-    pub entry: Option<E>,
     pub entry_type: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,

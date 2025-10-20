@@ -31,7 +31,6 @@ extern "ExtismHost" {
     fn upsert_resource_host(input: String) -> String;
     fn upsert_tag_host(input: String) -> String;
     fn upsert_entry_host(input: String) -> String;
-    fn upsert_entries_host(input: String) -> String;
     fn find_timezone_host(input: String) -> String;
     fn upsert_records_host(input: String) -> String;
     fn upsert_measurement_host(input: String) -> String;
@@ -49,7 +48,6 @@ pub mod host_fns {
         pub fn upsert_resource_host(input: String) -> Result<String>;
         pub fn upsert_tag_host(input: String) -> Result<String>;
         pub fn upsert_entry_host(input: String) -> Result<String>;
-        pub fn upsert_entries_host(input: String) -> Result<String>;
         pub fn find_timezone_host(input: String) -> Result<String>;
         pub fn upsert_records_host(input: String) -> Result<String>;
         pub fn upsert_measurement_host(input: String) -> Result<String>;
@@ -71,14 +69,9 @@ pub fn upsert_tag<T: Serialize>(input: TagInput<T>) -> Result<Uuid> {
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
-pub fn upsert_entry<E: Serialize>(input: EntryInput<E>) -> Result<Uuid> {
+pub fn upsert_entry(input: EntryInput) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
-}
-
-pub fn upsert_entries<E: Serialize>(entries: Vec<EntryInput<E>>) -> Result<()> {
-    unsafe { upsert_entries_host(serde_json::to_string(&entries)?)? };
-    Ok(())
 }
 
 pub fn upsert_record_histories<R: Serialize + DeserializeOwned, M: Serialize + DeserializeOwned>(
