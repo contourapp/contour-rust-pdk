@@ -52,8 +52,8 @@ pub struct Transform<T, J, M> {
 pub struct TransformRecord<T, J, M> {
     pub source_key: String,
     pub record_type: String,
-    pub sys_period_start: Option<String>,
-    pub sys_period_end: Option<String>,
+    pub sys_period_start: Option<DateTime<Utc>>,
+    pub sys_period_end: Option<DateTime<Utc>>,
     // Nested record data
     pub record: T,
     pub metadata: M,
