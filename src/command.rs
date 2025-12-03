@@ -15,6 +15,8 @@ pub struct Cron {
     pub from: DateTime<Utc>,
     pub until: DateTime<Utc>,
     pub first: bool,
+    #[serde(default)]
+    pub last: bool,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

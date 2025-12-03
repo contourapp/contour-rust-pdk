@@ -7,6 +7,7 @@ pub mod csv;
 use host_fns::*;
 pub mod io;
 pub mod models;
+pub mod response;
 
 pub use contour_rust_pdk_macros::listener_fn;
 
