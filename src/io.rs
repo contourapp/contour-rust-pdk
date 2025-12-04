@@ -304,16 +304,6 @@ pub fn get_type<T>(val: &T) -> String {
         .to_string()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct DeletedRecordHistoryInput {
-    pub source_key: String,
-    pub record_type: String,
-    /// Deletion timestamp from the plugin/3rd party system.
-    /// This timestamp will be used to close the sys_period.
-    /// The plugin should provide Utc::now() if the 3rd party system doesn't provide a timestamp.
-    pub deleted_at: DateTime<Utc>,
-}
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RecordHistoryInput<R, M> {
     pub source_key: String,
