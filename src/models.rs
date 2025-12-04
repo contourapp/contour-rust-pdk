@@ -6,19 +6,10 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum EntryStatus {
-    AutoPosted,
-    ManuallyPosted,
-    InReview,
-    Unposted,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Entry {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub effective_at: DateTime<FixedOffset>,
-    pub status: EntryStatus,
     pub entry_type: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
