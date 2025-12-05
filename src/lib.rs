@@ -3,7 +3,7 @@
 
 pub mod command;
 pub mod csv;
-pub mod io;
+pub mod inputs;
 pub mod models;
 
 pub use contour_rust_pdk_macros::{extract_fn, transform_fn};
@@ -11,12 +11,14 @@ pub use contour_rust_pdk_macros::{extract_fn, transform_fn};
 use anyhow::{Result, anyhow};
 pub use extism_pdk::{self, FnResult};
 use graphql_client::{GraphQLQuery, Response};
-use io::TimezoneInput;
+use inputs::TimezoneInput;
 pub use rust_decimal;
 pub use rust_decimal_macros::dec;
 use serde::{Serialize, de::DeserializeOwned};
 use std::str::FromStr;
 use uuid::Uuid;
+
+use crate::inputs::{EntryInput, RecordHistoryInput, RequestInput, ResourceInput, TagInput};
 
 #[cfg(target_arch = "wasm32")]
 #[extism_pdk::host_fn]
@@ -67,45 +69,35 @@ pub fn config(input: &str) -> Result<String> {
     unsafe { config_host(input.to_string()) }
 }
 
-pub fn upsert_resource<R: Serialize>(input: io::ResourceInput<R>) -> Result<Uuid> {
+pub fn upsert_resource<R: Serialize>(input: ResourceInput<R>) -> Result<Uuid> {
     let result = unsafe { upsert_resource_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
-pub fn upsert_tag<T: Serialize>(input: io::TagInput<T>) -> Result<Uuid> {
+pub fn upsert_tag<T: Serialize>(input: TagInput<T>) -> Result<Uuid> {
     let result = unsafe { upsert_tag_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
-pub fn upsert_entry<E: Serialize>(input: io::EntryInput<E>) -> Result<Uuid> {
+pub fn upsert_entry<E: Serialize>(input: EntryInput) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
 }
 
-pub fn upsert_entries<E: Serialize>(entries: Vec<io::EntryInput<E>>) -> Result<()> {
+pub fn upsert_entries<E: Serialize>(entries: Vec<EntryInput>) -> Result<()> {
     unsafe { upsert_entries_host(serde_json::to_string(&entries)?)? };
     Ok(())
 }
 
-pub fn upsert_records<R: Serialize + DeserializeOwned>(
-    input: io::RecordsInput<R>,
-) -> Result<Vec<Uuid>> {
-    let result = unsafe { upsert_records_host(serde_json::to_string(&input)?)? };
-    serde_json::from_str::<Vec<String>>(&result)?
-        .iter()
-        .map(|id| Uuid::from_str(id.as_str()).map_err(|_| anyhow!("Invalid UUID")))
-        .collect()
-}
-
-pub fn insert_record_history<R: Serialize + DeserializeOwned>(
-    input: io::RecordHistoryInput<R>,
+pub fn insert_record_history<R: Serialize + DeserializeOwned, M: Serialize + DeserializeOwned>(
+    input: RecordHistoryInput<R, M>,
 ) -> Result<()> {
     unsafe { upsert_record_history_host(serde_json::to_string(&input)?)? };
     Ok(())
 }
 
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
-    input: io::RequestInput<B>,
+    input: RequestInput<B>,
 ) -> Result<R> {
     let result = unsafe { make_request_host(serde_json::to_string(&input)?)? };
     serde_json::from_str::<R>(&result).map_err(|_| anyhow!("Failed to parse response: {}", &result))
