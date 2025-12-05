@@ -15,6 +15,8 @@ pub struct Cron {
     pub from: DateTime<Utc>,
     pub until: DateTime<Utc>,
     pub first: bool,
+    #[serde(default)]
+    pub last: bool,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -44,18 +46,19 @@ pub struct Scraper<C> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Transform<T, J> {
-    pub records: Vec<TransformRecord<T, J>>,
+pub struct Transform<T, J, M> {
+    pub records: Vec<TransformRecord<T, J, M>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransformRecord<T, J> {
+pub struct TransformRecord<T, J, M> {
     pub source_key: String,
     pub record_type: String,
-    pub valid_from: String,
-    pub valid_until: Option<String>,
+    pub sys_period_start: Option<DateTime<Utc>>,
+    pub sys_period_end: Option<DateTime<Utc>>,
     // Nested record data
     pub record: T,
+    pub metadata: M,
     // Join data nested within each record
     pub joins: J,
 }

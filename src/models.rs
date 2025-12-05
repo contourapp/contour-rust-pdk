@@ -6,20 +6,10 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum EntryStatus {
-    AutoPosted,
-    ManuallyPosted,
-    InReview,
-    Unposted,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Entry<E> {
+pub struct Entry {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub effective_at: DateTime<FixedOffset>,
-    pub status: EntryStatus,
-    pub entry: Option<E>,
     pub entry_type: String,
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
@@ -77,7 +67,7 @@ pub enum RequestMethod {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Request<B, M, Re> {
+pub struct Request<B, M, R> {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
     pub method: RequestMethod,
@@ -87,7 +77,7 @@ pub struct Request<B, M, Re> {
     pub body: B,
     pub metadata: M,
     pub metadata_type: String,
-    pub response: Re,
+    pub response: R,
     pub response_type: String,
     pub status_code: i32,
     pub instance_id: Uuid,
@@ -110,19 +100,4 @@ pub enum RecordAction {
     Insert,
     Update,
     Delete,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Record<R> {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub valid_from: DateTime<Utc>,
-    pub valid_until: Option<DateTime<Utc>>,
-    pub org_id: Uuid,
-    pub record: R,
-    pub record_type: Option<String>,
-    pub instance_id: Option<Uuid>,
-    pub source_key: Option<String>,
-    pub job_id: Option<Uuid>,
 }
