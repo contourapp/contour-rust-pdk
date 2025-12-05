@@ -78,6 +78,7 @@ pub fn upsert_record_histories<R: Serialize + DeserializeOwned, M: Serialize + D
     unsafe { upsert_records_host(serde_json::to_string(&input)?)? };
     Ok(())
 }
+
 pub fn make_request<B: Serialize, R: DeserializeOwned + Send + Sync>(
     input: RequestInput<B>,
 ) -> Result<R> {
