@@ -7,7 +7,8 @@ pub mod inputs;
 pub mod models;
 pub mod response;
 
-pub use contour_rust_pdk_macros::{extract_fn, transform_fn};
+#[cfg(not(target_arch = "wasm32"))]
+use host_fns::*;
 
 use anyhow::{Result, anyhow};
 pub use extism_pdk::{self, FnResult};
@@ -20,6 +21,7 @@ use uuid::Uuid;
 use crate::inputs::{
     EntryInput, RecordHistoryInput, RequestInput, ResourceInput, TagInput, TimezoneInput,
 };
+pub use contour_rust_pdk_macros::{extract_fn, transform_fn};
 
 #[cfg(target_arch = "wasm32")]
 #[extism_pdk::host_fn]
@@ -68,11 +70,6 @@ pub fn upsert_tag<T: Serialize>(input: TagInput<T>) -> Result<Uuid> {
 pub fn upsert_entry(input: EntryInput) -> Result<Uuid> {
     let result = unsafe { upsert_entry_host(serde_json::to_string(&input)?)? };
     Uuid::from_str(&result).map_err(|_| anyhow::anyhow!("Invalid UUID"))
-}
-
-pub fn upsert_entries(entries: Vec<EntryInput>) -> Result<()> {
-    unsafe { upsert_entries_host(serde_json::to_string(&entries)?)? };
-    Ok(())
 }
 
 pub fn insert_record_history<R: Serialize + DeserializeOwned, M: Serialize + DeserializeOwned>(
