@@ -171,6 +171,23 @@ impl LineInput {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ObservationInput {
+    pub effective: Effective,
+    pub source_key: String,
+    pub observation_type: String,
+    pub measurements: Vec<MeasurementInput>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct MeasurementInput {
+    pub measurement: Option<Decimal>,
+    pub description: Option<String>,
+    pub measurement_type: String,
+    pub measurement_identifier: Option<String>,
+    pub tags: Vec<TagSelector>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RequestMethod {
     Get,
@@ -337,6 +354,12 @@ impl<R, M> RecordHistoryInput<R, M> {
             valid_range,
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct RecordHistoryDelete {
+    pub source_key: String,
+    pub record_type: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
