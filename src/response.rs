@@ -1,8 +1,22 @@
 use chrono::{DateTime, Utc};
+use extism_pdk::{Json, ToBytes};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+use crate::inputs::{EntryInput, ObservationInput, ResourceInput, TagInput};
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToBytes)]
+#[encoding(Json)]
 pub struct ExtractResponse {
     pub start_date: DateTime<Utc>,
     pub end_date: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToBytes)]
+#[encoding(Json)]
+pub enum TransformResponse<I> {
+    EntryInput(EntryInput),
+    ObservationInput(ObservationInput),
+    TagInput(TagInput<I>),
+    ResourceInput(ResourceInput<I>),
+    None,
 }
