@@ -53,7 +53,7 @@ pub struct Resource<R> {
     pub source_key: Option<String>,
     pub instance_id: Option<Uuid>,
     pub resource: Option<R>,
-    pub resource_type: String,
+    pub resource_type: Option<String>,
     pub data_type: Option<String>,
 }
 
